@@ -24,7 +24,12 @@ const BlogLayoutOne = ({ blog }) => {
       />
 
       <div className="w-full absolute bottom-0 p-4 xs:p-6 sm:p-10 z-20">
-        <Tag link={`/categories/${slug(blog.tags[0])}`} name={blog.tags[0]}
+        <Tag
+  link={`/categories/${blog.tagSlugs[0]}`}   // ✅ 用拼音 slug
+  name={blog.tags[0]}                        // ✅ 显示中文标签
+  className="px-6 text-xs sm:text-sm py-1 sm:py-2 !border"
+/>
+
         className="px-6 text-xs  sm:text-sm py-1 sm:py-2 !border "
         />
         <Link href={blog.url} className="mt-6">
