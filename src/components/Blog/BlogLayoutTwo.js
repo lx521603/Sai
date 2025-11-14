@@ -25,11 +25,17 @@ const BlogLayoutTwo = ({ blog }) => {
       </Link>
 
       <div className="col-span-12 lg:col-span-8 w-full">
-        {blog.tags && blog.tags.length > 0 && (
-          <span className="inline-block w-full uppercase text-accent dark:text-accentDark font-semibold text-xs sm:text-sm">
-            {blog.tags[0]}
-          </span>
-        )}
+        {blog.tags &&
+          blog.tags.length > 0 &&
+          blog.tagSlugs &&
+          blog.tagSlugs.length > 0 && (
+            <Link
+              href={`/categories/${blog.tagSlugs[0]}`}
+              className="inline-block w-full uppercase text-accent dark:text-accentDark font-semibold text-xs sm:text-sm"
+            >
+              {blog.tags[0]}
+            </Link>
+          )}
 
         <Link href={blog.url} className="inline-block my-1">
           <h2 className="font-semibold capitalize text-base sm:text-lg">
