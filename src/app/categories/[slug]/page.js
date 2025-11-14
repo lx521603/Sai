@@ -36,8 +36,8 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }) {
   if (params.slug === "all") {
     return {
-      title: "All Blogs",
-      description: "Explore all our expert blogs and tutorials",
+      title: "所有文章",
+      description: "浏览所有的文章和教程",
     };
   }
 
@@ -52,7 +52,7 @@ export async function generateMetadata({ params }) {
 
   return {
     title: `${originalTag} Blogs`,
-    description: `Learn more about ${originalTag} through our collection of expert blogs`,
+    description: `了解更多 ${originalTag} 通过我们收集的专业文章`,
   };
 }
 
@@ -61,7 +61,7 @@ export default function CategoryPage({ params }) {
   const currentSlug = params.slug;
 
   // ✅ 改成对象数组，保留中文和拼音
-  const allCategories = [{ name: "all", slug: "all" }];
+  const allCategories = [{ name: "全部标签", slug: "all" }];
   allBlogs.forEach((blog) => {
     if (Array.isArray(blog.tags) && Array.isArray(blog.tagSlugs)) {
       blog.tags.forEach((tag, i) => {
@@ -97,7 +97,7 @@ export default function CategoryPage({ params }) {
           #{currentTagName}
         </h1>
         <span className="mt-2 inline-block">
-          Discover more categories and expand your knowledge!
+          探索更多类别，拓展您的知识！
         </span>
       </div>
 
