@@ -12,7 +12,10 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
 
-  // 自定义 webpack 插件
+  // 显式启用 Turbopack，避免报错
+  turbopack: {},
+
+  // 保留自定义 webpack 插件逻辑（Velite）
   webpack: (config) => {
     config.plugins.push(new VeliteWebpackPlugin())
     return config
