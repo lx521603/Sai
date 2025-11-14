@@ -39,23 +39,26 @@ const blog = s
     toc: s.toc(),
     slug: s.string(),
   })
-  .transform(data => {
-    slugger.reset()
+ .transform(data => {
+  slugger.reset()
 
-    // 生成 tagSlugs（拼音），用于 URL 和过滤
-    const tagSlugs = data.tags.map(getTagSlug)
+  const tagSlugs = data.tags.map(tag => 
+    pinyin(tag, { style: pinyin.STYLE_NORMAL, heteronym: false })
+      .join('-')
+      .toLowerCase()
+  )
 
-    return {
-      ...data,
-      url: `/blogs/${data.slug}`,
-      readingTime: readingTime(data.body),
-      tagSlugs,  // ← 关键字段：["qianduan", "next-js"]
-      image: {
-        ...data.image,
-        src: data.image.src.replace('/static', '/blogs'),
-      },
-    }
-  })
+  return {
+    ...data,
+    url: `/blogs/${data.slug}`,
+    readingTime: readingTime(data.body),
+    tagSlugs,  // ← 关键！
+    image: {
+      ...data.image,
+      src: data.image.src.replace('/static', '/blogs'),
+    },
+  }
+})
 
 export default defineConfig({
   root: 'content',
