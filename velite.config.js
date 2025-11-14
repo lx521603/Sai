@@ -6,7 +6,7 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import rehypePrettyCode from 'rehype-pretty-code'
 import rehypeSlug from 'rehype-slug'
 import remarkGfm from 'remark-gfm'
-import pinyin from 'pinyin'  // ← 中文转拼音
+import * as pinyin from 'pinyin'  // 修复：改为 * as pinyin
 
 const slugger = new GithubSlugger()
 
@@ -24,31 +24,34 @@ const blog = s
     image: s.image(),
     isPublished: s.boolean().default(true),
     author: s.string(),
-    tags: s.array(s.string()),  // 支持中文
+    tags: s.array(s.string()),
     body: s.mdx(),
     toc: s.toc(),
     slug: s.string(),
   })
- .transform(data => {
-  slugger.reset()
+  .transform(data => {
+    slugger.reset()
 
-  const tagSlugs = data.tags.map(tag => 
-    pinyin(tag, { style: pinyin.STYLE_NORMAL, heteronym: false })
-      .join('-')
-      .toLowerCase()
-  )
+    const tagSlugs = data.tags.map(tag =>
+      pinyin.pinyin(tag, {  // 修复：pinyin.pinyin()
+        style: pinyin.STYLE_NORMAL,
+        heteronym: false,
+      })
+        .join('-')
+        .toLowerCase()
+    )
 
-  return {
-    ...data,
-    url: `/blogs/${data.slug}`,
-    readingTime: readingTime(data.body),
-    tagSlugs,  // ← 关键！
-    image: {
-      ...data.image,
-      src: data.image.src.replace('/static', '/blogs'),
-    },
-  }
-})
+    return {
+      ...data,
+      url: `/blogs/${data.slug}`,
+      readingTime: readingTime(data.body),
+      tagSlugs,
+      image: {
+        ...data.image,
+        src: data.image.src.replace('/static', '/blogs'),
+      },
+    }
+  })
 
 export default defineConfig({
   root: 'content',
