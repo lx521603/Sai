@@ -30,37 +30,41 @@ const blog = s
     slug: s.string().optional(), // ✅ 自动生成 slug
   })
   .transform(data => {
-    slugger.reset()
+  slugger.reset()
 
-    // ✅ 中文标签转拼音 slug
-    const tagSlugs = (data.tags || []).map(tag => {
-      if (/[\u4e00-\u9fa5]/.test(tag)) {
-        return pinyin(tag, { toneType: 'none', type: 'array' }).join('-').toLowerCase()
-      }
-      return slugger.slug(tag)
-    })
-
-    // ✅ 标题 slug 也支持中文
-    const titleSlug = data.slug
-      ? data.slug
-      : /[\u4e00-\u9fa5]/.test(data.title)
-        ? pinyin(data.title, { toneType: 'none', type: 'array' }).join('-').toLowerCase()
-        : slugger.slug(data.title)
-
-    return {
-      ...data,
-      slug: titleSlug,
-      url: `/blogs/${titleSlug}`,
-      readingTime: readingTime(data.body),
-      tagSlugs,
-      image: data.image
-        ? {
-            ...data.image,
-            src: data.image.src.replace('/static', '/blogs'),
-          }
-        : undefined,
+  // ✅ 中文标签转拼音 slug
+  const tagSlugs = (data.tags || []).map(tag => {
+    if (/[\u4e00-\u9fa5]/.test(tag)) {
+      return pinyin(tag, { toneType: 'none', type: 'array' }).join('-').toLowerCase()
     }
+    return slugger.slug(tag)
   })
+
+  // ✅ 标题 slug 也支持中文
+  const titleSlug = data.slug
+    ? data.slug
+    : /[\u4e00-\u9fa5]/.test(data.title)
+      ? pinyin(data.title, { toneType: 'none', type: 'array' }).join('-').toLowerCase()
+      : slugger.slug(data.title)
+
+  return {
+    ...data,
+    slug: titleSlug,
+    url: `/blogs/${titleSlug}`,
+    readingTime: readingTime(data.body),
+    tagSlugs,
+    image: data.image
+      ? {
+          ...data.image,
+          src: data.image.src.startsWith('http')
+            ? data.image.src
+            : data.image.src.replace('/static', '/blogs'),
+        }
+      : undefined,
+    updatedAt: data.updatedAt || new Date().toISOString(), // 自动生成更新时间
+  }
+})
+
 
 export default defineConfig({
   root: 'content',
