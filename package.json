@@ -2,14 +2,12 @@
   "name": "developer-blog-starter-code",
   "version": "0.1.0",
   "private": true,
-  {
   "scripts": {
     "dev": "node scripts/velite-build.js & next dev",
     "build": "node scripts/velite-build.js && next build --turbopack",
     "start": "next start",
     "lint": "next lint"
   }
-}
 
   "dependencies": {
     "@lottiefiles/dotlottie-react": "^0.12.0",
