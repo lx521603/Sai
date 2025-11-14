@@ -2,16 +2,15 @@
 import { blogs as allBlogs } from "@/.velite/generated";
 import BlogLayoutThree from "@/src/components/Blog/BlogLayoutThree";
 import Categories from "@/src/components/Blog/Categories";
-import pinyin from "pinyin";  // 默认导入
+import { pinyin } from "pinyin-pro";  // 改用 pinyin-pro
 
 const getTagSlug = (tag) => {
-  return pinyin(tag, {
-    style: pinyin.STYLE_NORMAL,
-    heteronym: false,
-    segment: false  // 禁用分词
-  })
-    .join("")
-    .toLowerCase();
+  if (/[\u4e00-\u9fa5]/.test(tag)) {
+    return pinyin(tag, { toneType: "none", type: "array" })
+      .join("-")
+      .toLowerCase();
+  }
+  return tag.toLowerCase().replace(/\s+/g, "-");
 };
 
 // 预生成所有分类页
