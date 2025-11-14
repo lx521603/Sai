@@ -1,4 +1,3 @@
-// app/categories/[slug]/page.js
 import { blogs as allBlogs } from "@/.velite/generated";
 import BlogLayoutThree from "@/src/components/Blog/BlogLayoutThree";
 import Categories from "@/src/components/Blog/Categories";
@@ -20,7 +19,7 @@ export async function generateStaticParams() {
   const seen = new Set();
 
   allBlogs.forEach((blog) => {
-    if (blog.isPublished) {
+    if (blog.isPublished && Array.isArray(blog.tagSlugs)) {
       blog.tagSlugs.forEach((slug) => {
         if (!seen.has(slug)) {
           seen.add(slug);
@@ -43,12 +42,13 @@ export async function generateMetadata({ params }) {
   }
 
   const blogWithTag = allBlogs.find(
-    (blog) => blog.tagSlugs.includes(params.slug) && blog.isPublished
+    (blog) => Array.isArray(blog.tagSlugs) && blog.tagSlugs.includes(params.slug) && blog.isPublished
   );
 
-  const originalTag = blogWithTag
-    ? blogWithTag.tags[blogWithTag.tagSlugs.indexOf(params.slug)]
-    : params.slug;
+  const originalTag =
+    blogWithTag && Array.isArray(blogWithTag.tags) && Array.isArray(blogWithTag.tagSlugs)
+      ? blogWithTag.tags[blogWithTag.tagSlugs.indexOf(params.slug)]
+      : params.slug;
 
   return {
     title: `${originalTag} Blogs`,
@@ -63,29 +63,31 @@ export default function CategoryPage({ params }) {
   // ✅ 改成对象数组，保留中文和拼音
   const allCategories = [{ name: "all", slug: "all" }];
   allBlogs.forEach((blog) => {
-    blog.tags.forEach((tag, i) => {
-      const slug = blog.tagSlugs[i];
-      if (!allCategories.find((c) => c.slug === slug)) {
-        allCategories.push({ name: tag, slug });
-      }
-    });
+    if (Array.isArray(blog.tags) && Array.isArray(blog.tagSlugs)) {
+      blog.tags.forEach((tag, i) => {
+        const slug = blog.tagSlugs[i];
+        if (slug && !allCategories.find((c) => c.slug === slug)) {
+          allCategories.push({ name: tag, slug });
+        }
+      });
+    }
   });
   allCategories.sort((a, b) => a.slug.localeCompare(b.slug));
 
   // 过滤博客
   const blogs = allBlogs.filter((blog) => {
     if (currentSlug === "all") return blog.isPublished;
-    return blog.tagSlugs.includes(currentSlug) && blog.isPublished;
+    return Array.isArray(blog.tagSlugs) && blog.tagSlugs.includes(currentSlug) && blog.isPublished;
   });
 
   // 当前标签中文名
   const currentTagName =
     currentSlug === "all"
       ? "all"
-      : allBlogs.find((blog) => blog.tagSlugs.includes(currentSlug))
-          ?.tags[
-            allBlogs.find((blog) => blog.tagSlugs.includes(currentSlug))
-              .tagSlugs.indexOf(currentSlug)
+      : allBlogs.find((blog) => Array.isArray(blog.tagSlugs) && blog.tagSlugs.includes(currentSlug))
+          ?.tags?.[
+            allBlogs.find((blog) => Array.isArray(blog.tagSlugs) && blog.tagSlugs.includes(currentSlug))
+              ?.tagSlugs.indexOf(currentSlug)
           ] || currentSlug;
 
   return (
