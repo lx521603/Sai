@@ -13,7 +13,12 @@ const nextConfig = {
   },
 
   // 显式启用 Turbopack，避免报错
-  turbopack: {},
+  turbopack: {
+    resolveAlias: {
+      "@": "./src",
+      "@/.velite/generated": "./.velite/generated",
+    },
+  },
 
   // 保留自定义 webpack 插件逻辑（Velite）
   webpack: (config) => {
