@@ -6,7 +6,7 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import rehypePrettyCode from 'rehype-pretty-code'
 import rehypeSlug from 'rehype-slug'
 import remarkGfm from 'remark-gfm'
-import * as pinyin from 'pinyin'  // 正确导入
+import * as pinyin from 'pinyin'
 
 const slugger = new GithubSlugger()
 
@@ -72,7 +72,7 @@ export default defineConfig({
     rehypePlugins: [
       rehypeSlug,
       [rehypeAutolinkHeadings, { behavior: 'append' }],
-     : [rehypePrettyCode, codeOptions],
+      [rehypePrettyCode, codeOptions],  // 修复：去掉冒号
     ],
   },
 })
