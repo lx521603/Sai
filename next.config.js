@@ -2,25 +2,21 @@
 const nextConfig = {
   reactStrictMode: true,
 
-  // 构建时移除 console
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
 
-  // 构建阶段不因 ESLint 报错而失败
   eslint: {
     ignoreDuringBuilds: true,
   },
 
-  // 显式启用 Turbopack，避免报错
   turbopack: {
     resolveAlias: {
       "@": "./src",
-      "@/.velite/generated": "./.velite/generated",
-    },
+      "@/.velite/generated": "./.velite/generated"
+    }
   },
 
-  // 保留自定义 webpack 插件逻辑（Velite）
   webpack: (config) => {
     config.plugins.push(new VeliteWebpackPlugin())
     return config
@@ -41,8 +37,8 @@ class VeliteWebpackPlugin {
       const { build } = await import('velite')
 
       await build({
-        watch: dev,   // 开发模式下 watch
-        clean: !dev,  // 生产模式下 clean
+        watch: dev,
+        clean: !dev,
       })
     })
   }
