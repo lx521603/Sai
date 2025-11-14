@@ -17,54 +17,46 @@ const codeOptions = {
 
 const blog = s
   .object({
-    title: s.string(), // 必填
-    publishedAt: s.isodate().default(() => new Date().toISOString()), // ✅ 自动生成发布时间
-    updatedAt: s.isodate().optional(), // 可选
-    description: s.string().optional(), // 可选
-    image: s.image().optional(), // 可选
-    isPublished: s.boolean().default(true), // 默认 true
-    author: s.string().optional(), // 可选
-    tags: s.array(s.string()).optional(), // 可选
-    body: s.mdx(), // 必填
-    toc: s.toc().optional(), // 可选
-    slug: s.string().optional(), // ✅ 自动生成 slug
+    title: s.string(),
+    publishedAt: s.isodate(),
+    updatedAt: s.isodate(),
+    description: s.string(),
+    image: s.image(),
+    isPublished: s.boolean().default(true),
+    author: s.string(),
+    tags: s.array(s.string()),
+    body: s.mdx(),
+    toc: s.toc(),
+    slug: s.string(),
   })
   .transform(data => {
-  slugger.reset()
+    slugger.reset()
 
-  // ✅ 中文标签转拼音 slug
-  const tagSlugs = (data.tags || []).map(tag => {
-    if (/[\u4e00-\u9fa5]/.test(tag)) {
-      return pinyin(tag, { toneType: 'none', type: 'array' }).join('-').toLowerCase()
-    }
-    return slugger.slug(tag)
-  })
+    // ✅ 中文标签转拼音 slug
+    const tagSlugs = data.tags.map(tag => {
+      if (/[\u4e00-\u9fa5]/.test(tag)) {
+        return pinyin(tag, { toneType: 'none', type: 'array' }).join('-').toLowerCase()
+      }
+      return slugger.slug(tag)
+    })
 
-  // ✅ 标题 slug 也支持中文
-  const titleSlug = data.slug
-    ? data.slug
-    : /[\u4e00-\u9fa5]/.test(data.title)
+    // ✅ 标题 slug 也支持中文
+    const titleSlug = /[\u4e00-\u9fa5]/.test(data.title)
       ? pinyin(data.title, { toneType: 'none', type: 'array' }).join('-').toLowerCase()
       : slugger.slug(data.title)
 
-  return {
-    ...data,
-    slug: titleSlug,
-    url: `/blogs/${titleSlug}`,
-    readingTime: readingTime(data.body),
-    tagSlugs,
-    image: data.image
-      ? {
-          ...data.image,
-          src: data.image.src.startsWith('http')
-            ? data.image.src
-            : data.image.src.replace('/static', '/blogs'),
-        }
-      : undefined,
-    updatedAt: data.updatedAt || new Date().toISOString(), // 自动生成更新时间
-  }
-})
-
+    return {
+      ...data,
+      slug: titleSlug,
+      url: `/blogs/${titleSlug}`,
+      readingTime: readingTime(data.body),
+      tagSlugs,
+      image: {
+        ...data.image,
+        src: data.image.src.replace('/static', '/blogs'),
+      },
+    }
+  })
 
 export default defineConfig({
   root: 'content',
