@@ -4,6 +4,7 @@ import BlogLayoutThree from "@/src/components/Blog/BlogLayoutThree";
 import Categories from "@/src/components/Blog/Categories";
 import { pinyin } from "pinyin-pro";  // 改用 pinyin-pro
 
+// 生成 slug
 const getTagSlug = (tag) => {
   if (/[\u4e00-\u9fa5]/.test(tag)) {
     return pinyin(tag, { toneType: "none", type: "array" })
@@ -59,16 +60,17 @@ export async function generateMetadata({ params }) {
 export default function CategoryPage({ params }) {
   const currentSlug = params.slug;
 
-  // 生成所有分类
-  const allCategories = ["all"];
+  // ✅ 改成对象数组，保留中文和拼音
+  const allCategories = [{ name: "all", slug: "all" }];
   allBlogs.forEach((blog) => {
-    blog.tagSlugs.forEach((slug) => {
-      if (!allCategories.includes(slug)) {
-        allCategories.push(slug);
+    blog.tags.forEach((tag, i) => {
+      const slug = blog.tagSlugs[i];
+      if (!allCategories.find((c) => c.slug === slug)) {
+        allCategories.push({ name: tag, slug });
       }
     });
   });
-  allCategories.sort();
+  allCategories.sort((a, b) => a.slug.localeCompare(b.slug));
 
   // 过滤博客
   const blogs = allBlogs.filter((blog) => {
@@ -80,8 +82,7 @@ export default function CategoryPage({ params }) {
   const currentTagName =
     currentSlug === "all"
       ? "all"
-      : allBlogs
-          .find((blog) => blog.tagSlugs.includes(currentSlug))
+      : allBlogs.find((blog) => blog.tagSlugs.includes(currentSlug))
           ?.tags[
             allBlogs.find((blog) => blog.tagSlugs.includes(currentSlug))
               .tagSlugs.indexOf(currentSlug)
@@ -98,6 +99,7 @@ export default function CategoryPage({ params }) {
         </span>
       </div>
 
+      {/* ✅ 传对象数组 */}
       <Categories categories={allCategories} currentSlug={currentSlug} />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-16 mt-5 sm:mt-10 md:mt-24 sxl:mt-32 px-5 sm:px-10 md:px-24 sxl:px-32">
