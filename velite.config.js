@@ -15,16 +15,6 @@ const codeOptions = {
   grid: false,
 }
 
-// 工具：中文标签 → 拼音 slug
-const getTagSlug = (tag: string): string => {
-  return pinyin(tag, {
-    style: pinyin.STYLE_NORMAL,
-    heteronym: false,
-  })
-    .join('-')
-    .toLowerCase()
-}
-
 const blog = s
   .object({
     title: s.string(),
