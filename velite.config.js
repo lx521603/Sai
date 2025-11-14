@@ -1,4 +1,4 @@
-// velite.config.ts
+// velite.config.js
 import { defineConfig, s } from 'velite'
 import GithubSlugger from 'github-slugger'
 import readingTime from 'reading-time'
@@ -6,7 +6,7 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import rehypePrettyCode from 'rehype-pretty-code'
 import rehypeSlug from 'rehype-slug'
 import remarkGfm from 'remark-gfm'
-import * as pinyin from 'pinyin'  // 修复：改为 * as pinyin
+import * as pinyin from 'pinyin'  // 正确导入
 
 const slugger = new GithubSlugger()
 
@@ -33,7 +33,7 @@ const blog = s
     slugger.reset()
 
     const tagSlugs = data.tags.map(tag =>
-      pinyin.pinyin(tag, {  // 修复：pinyin.pinyin()
+      pinyin.pinyin(tag, {
         style: pinyin.STYLE_NORMAL,
         heteronym: false,
       })
@@ -72,7 +72,7 @@ export default defineConfig({
     rehypePlugins: [
       rehypeSlug,
       [rehypeAutolinkHeadings, { behavior: 'append' }],
-      [rehypePrettyCode, codeOptions],
+     : [rehypePrettyCode, codeOptions],
     ],
   },
 })
