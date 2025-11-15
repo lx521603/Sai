@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 获取完整历史记录，便于 Velite 比较变化
 
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.0.3
@@ -20,31 +22,57 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
+            set -e  # 遇到错误立即退出
+
+            echo "🚀 开始部署 Next.js 应用..."
+            
             cd /opt/1panel/runtime/next/sai
 
-            echo "=== 停止旧的 PM2 服务（如果存在） ==="
-            pm2 stop all || true
-            pm2 delete all || true
+            echo "=== 1. 停止并清理旧的 PM2 服务 ==="
+            pm2 stop all --silent || true
+            pm2 delete all --silent || true
 
-            echo "=== 拉取最新代码 ==="
-            git pull origin main
+            echo "=== 2. 拉取最新代码 ==="
+            git fetch origin main
+            git reset --hard origin/main
 
-            echo "=== 清理缓存和依赖（保留 .velite） ==="
-            rm -rf .next node_modules
+            echo "=== 3. 检查是否有 package.json 变更 ==="
+            if git diff --name-only HEAD~1 HEAD | grep -q "package.json\|package-lock.json"; then
+              echo "📦 检测到依赖变更，清理缓存..."
+              rm -rf .next node_modules
+            else
+              echo "📦 依赖未变更，跳过清理..."
+            fi
 
-            echo "=== 安装依赖 ==="
-            npm install
+            echo "=== 4. 安装依赖 ==="
+            npm ci --prefer-offline --no-audit
 
-            echo "=== 构建项目（Velite 自动生成 .velite/generated） ==="
+            echo "=== 5. 构建项目 ==="
+            echo "🔨 Velite 构建中..."
             npm run build
 
-            echo "=== 重启 PM2 服务 ==="
-            pm2 start npm --name "sai" -- run start
+            echo "=== 6. 启动 PM2 服务 ==="
+            # 检查是否已存在 sai 应用
+            if pm2 list | grep -q "sai"; then
+              echo "🔄 重启现有应用..."
+              pm2 restart sai --update-env
+            else
+              echo "🆕 创建新应用..."
+              pm2 start npm --name "sai" -- run start
+            fi
 
-            echo "=== 保存 PM2 配置，保证开机自启 ==="
-            pm2 save
+            echo "=== 7. 配置 PM2 开机自启 ==="
+            pm2 save --force
+            pm2 startup | tail -1 | sh 2>/dev/null || true
 
-            echo "=== 查看 PM2 状态 ==="
-            pm2 status
+            echo "=== 8. 最终状态检查 ==="
+            echo "📊 应用状态:"
+            pm2 list
+            
+            echo "📈 资源使用:"
+            pm2 monit --silent & 
+            sleep 5
+            pkill pm2 || true
 
-            echo "✅ 部署完成，PM2 已托管 blog 服务"
+            echo "✅ 部署完成！PM2 已成功托管 sai 服务"
+            echo "🌐 应用运行在: http://localhost:3888"
