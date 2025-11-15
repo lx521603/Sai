@@ -52,11 +52,13 @@ const blog = s
       tagSlugs,
       image: data.image
         ? {
-            ...data.image,
-            src: data.image.src.replace('/static', '/blogs'),
+          ...data.image,
+          src: data.image.src.startsWith('http')
+            ? data.image.src // ✅ 保持远程 URL 不变
+           : data.image.src.replace('/static', '/blogs'), // ✅ 本地资源才替换路径
           }
         : null, // ✅ 防御性处理
-    }
+   }
   })
 
 export default defineConfig({
