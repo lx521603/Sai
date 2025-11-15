@@ -4,7 +4,14 @@ import BlogLayoutOne from "../Blog/BlogLayoutOne";
 import BlogLayoutTwo from "../Blog/BlogLayoutTwo";
 
 const FeaturedPosts = ({ blogs }) => {
+  if (!Array.isArray(blogs) || blogs.length === 0) return null;
+
+  // ✅ 优先筛选 frontmatter 里标记了 featured:true 的文章
   const featuredBlogs = blogs.filter(blog => blog.featured);
+
+  // ✅ 如果没有标记，就用排序后的前 3 篇
+  const sortedBlogs = sortBlogs(blogs);
+  const list = featuredBlogs.length > 0 ? featuredBlogs : sortedBlogs.slice(0, 3);
 
   return (
     <section className="w-full mt-16 sm:mt-24 md:mt-32 px-5 sm:px-10 md:px-24 sxl:px-32 flex flex-col items-center justify-center">
@@ -13,19 +20,19 @@ const FeaturedPosts = ({ blogs }) => {
       </h2>
 
       <div className="grid grid-cols-2 grid-rows-2 gap-6 mt-10 sm:mt-16">
-        {sortedBlogs[0] && (
+        {list[0] && (
           <article className="col-span-2 sxl:col-span-1 row-span-2 relative">
-            <BlogLayoutOne blog={sortedBlogs[0]} />
+            <BlogLayoutOne blog={list[0]} />
           </article>
         )}
-        {sortedBlogs[1] && (
+        {list[1] && (
           <article className="col-span-2 sm:col-span-1 row-span-1 relative">
-            <BlogLayoutTwo blog={sortedBlogs[1]} />
+            <BlogLayoutTwo blog={list[1]} />
           </article>
         )}
-        {sortedBlogs[2] && (
+        {list[2] && (
           <article className="col-span-2 sm:col-span-1 row-span-1 relative">
-            <BlogLayoutTwo blog={sortedBlogs[2]} />
+            <BlogLayoutTwo blog={list[2]} />
           </article>
         )}
       </div>
