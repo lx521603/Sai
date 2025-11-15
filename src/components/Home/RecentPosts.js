@@ -1,7 +1,7 @@
 import { format, parseISO } from "date-fns";
 import Link from "next/link";
 import React from "react";
-import ViewCounter from "./ViewCounter";
+import ViewCounter from "../Blog/ViewCounter";
 
 const BlogDetails = ({ blog, slug: blogSlug }) => {
   if (!blog) return null;
