@@ -3,14 +3,14 @@ const SkillList = [
   "tailwind css",
   "figma",
   "javaScript",
-  "旅游",
+  "旅行",
   "喝茶",
   "摄影",
   "咖啡",
   "generative AI",
   "wireframing",
   "SEO",
-  "framer motion",
+  "摩托",
   "sanity",
 ];
 
