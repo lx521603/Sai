@@ -68,11 +68,6 @@ jobs:
             echo "=== 8. 最终状态检查 ==="
             echo "📊 应用状态:"
             pm2 list
-            
-            echo "📈 资源使用:"
-            pm2 monit --silent & 
-            sleep 5
-            pkill pm2 || true
 
             echo "✅ 部署完成！PM2 已成功托管 sai 服务"
             echo "🌐 应用运行在: http://localhost:3888"
