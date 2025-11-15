@@ -5,7 +5,7 @@ import React from 'react';
 import Tag from '../Elements/Tag';
 
 const HomeCoverSection = ({ blogs }) => {
-  // 排序文章
+  // ✅ 排序文章，保证 sortedBlogs 存在
   const sortedBlogs = sortBlogs(blogs);
 
   // ✅ 优先找 frontmatter 里有 homeCover: true 的文章，否则取第一篇
