@@ -1,7 +1,3 @@
-console.log("params.slug:", params.slug);
-console.log("decoded:", decodeURIComponent(params.slug));
-console.log("allBlogs sample:", allBlogs[0]);
-
 import { blogs as allBlogs } from "@/.velite/generated";
 import BlogLayoutThree from "@/src/components/Blog/BlogLayoutThree";
 import Categories from "@/src/components/Blog/Categories";
@@ -17,7 +13,7 @@ const getTagSlug = (tag) => {
   return tag.toLowerCase().replace(/\s+/g, "-");
 };
 
-// 预生成所有分类页 - 移除编码
+// 预生成所有分类页
 export async function generateStaticParams() {
   const paths = [{ slug: "all" }];
   const seen = new Set();
@@ -27,7 +23,6 @@ export async function generateStaticParams() {
       blog.tagSlugs.forEach((slug) => {
         if (!seen.has(slug)) {
           seen.add(slug);
-          // ✅ 移除 encodeURIComponent
           paths.push({ slug: slug });
         }
       });
@@ -37,9 +32,10 @@ export async function generateStaticParams() {
   return paths;
 }
 
-// SEO 元数据 - 移除解码
-export async function generateMetadata({ params }) {
-  const slug = params.slug; // ✅ 移除 decodeURIComponent
+// SEO 元数据
+export async function generateMetadata(props) {  // ✅ 改为 props
+  const params = await props.params  // ✅ 添加 await
+  const slug = params.slug
   if (slug === "all") {
     return {
       title: "所有文章",
@@ -62,9 +58,10 @@ export async function generateMetadata({ params }) {
   };
 }
 
-// 主组件 - 移除解码
-export default function CategoryPage({ params }) {
-  const currentSlug = params.slug; // ✅ 移除 decodeURIComponent
+// 主组件
+export default async function CategoryPage(props) {  // ✅ 改为 props 和 async
+  const params = await props.params  // ✅ 添加 await
+  const currentSlug = params.slug
 
   // ✅ 改成对象数组，保留中文和拼音
   const allCategories = [{ name: "全部标签", slug: "all" }];
@@ -107,7 +104,6 @@ export default function CategoryPage({ params }) {
         </span>
       </div>
 
-      {/* ✅ Categories 组件内部也需要相应修改 */}
       <Categories categories={allCategories} currentSlug={currentSlug} />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-16 mt-5 sm:mt-10 md:mt-24 sxl:mt-32 px-5 sm:px-10 md:px-24 sxl:px-32">
