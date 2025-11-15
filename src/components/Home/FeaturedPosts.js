@@ -1,43 +1,48 @@
 import { sortBlogs } from "@/src/utils";
+import Link from "next/link";
 import React from "react";
-import BlogLayoutOne from "../Blog/BlogLayoutOne";
-import BlogLayoutTwo from "../Blog/BlogLayoutTwo";
+import BlogLayoutThree from "../Blog/BlogLayoutThree";
+import Tag from "../Elements/Tag";
 
-const FeaturedPosts = ({ blogs }) => {
+const RecentPosts = ({ blogs }) => {
   if (!Array.isArray(blogs) || blogs.length === 0) return null;
 
-  // ✅ 优先筛选 frontmatter 里标记了 featured:true 的文章
-  const featuredBlogs = blogs.filter(blog => blog.featured);
-
-  // ✅ 如果没有标记，就用排序后的前 3 篇
   const sortedBlogs = sortBlogs(blogs);
-  const list = featuredBlogs.length > 0 ? featuredBlogs : sortedBlogs.slice(0, 3);
 
   return (
     <section className="w-full mt-16 sm:mt-24 md:mt-32 px-5 sm:px-10 md:px-24 sxl:px-32 flex flex-col items-center justify-center">
-      <h2 className="w-full inline-block font-bold capitalize text-2xl md:text-4xl text-dark dark:text-light">
-        精选文章
-      </h2>
+      <div className="w-full flex justify-between">
+        <h2 className="w-fit inline-block font-bold capitalize text-2xl md:text-4xl text-dark dark:text-light">
+          近期文章
+        </h2>
+        <Link
+          href="/categories/all"
+          className="inline-block font-medium text-accent dark:text-accentDark underline underline-offset-2 text-base md:text-lg"
+        >
+          浏览所有
+        </Link>
+      </div>
 
-      <div className="grid grid-cols-2 grid-rows-2 gap-6 mt-10 sm:mt-16">
-        {list[0] && (
-          <article className="col-span-2 sxl:col-span-1 row-span-2 relative">
-            <BlogLayoutOne blog={list[0]} />
-          </article>
-        )}
-        {list[1] && (
-          <article className="col-span-2 sm:col-span-1 row-span-1 relative">
-            <BlogLayoutTwo blog={list[1]} />
-          </article>
-        )}
-        {list[2] && (
-          <article className="col-span-2 sm:col-span-1 row-span-1 relative">
-            <BlogLayoutTwo blog={list[2]} />
-          </article>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 grid-rows-2 gap-16 mt-16">
+        {sortedBlogs.slice(4, 10).map((blog) =>
+          blog ? (
+            <article key={blog._id || blog.slug} className="col-span-1 row-span-1 relative">
+              <BlogLayoutThree blog={blog} />
+
+              {/* ✅ 显示所有标签 */}
+              {blog.tags && blog.tagSlugs && blog.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {blog.tags.map((tag, idx) => (
+                    <Tag key={idx} link={`/categories/${blog.tagSlugs[idx]}`} name={tag} />
+                  ))}
+                </div>
+              )}
+            </article>
+          ) : null
         )}
       </div>
     </section>
   );
 };
 
-export default FeaturedPosts;
+export default RecentPosts;
