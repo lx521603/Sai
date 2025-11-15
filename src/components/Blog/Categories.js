@@ -7,9 +7,9 @@ const Categories = ({ categories = [], currentSlug }) => {
       {(categories || []).map((cat) => (
         <Category
           key={cat.slug}
-          link={`/categories/${cat.slug}`}   // ✅ URL 用拼音
-          name={cat.name}                    // ✅ 显示中文
-          active={currentSlug === cat.slug}
+          link={`/categories/${encodeURIComponent(cat.slug)}`}   // ✅ 确保 URL 安全
+          name={cat.name}                                       // ✅ 显示中文
+          active={decodeURIComponent(currentSlug) === cat.slug} // ✅ 保证匹配成功
         />
       ))}
     </div>
