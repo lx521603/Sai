@@ -5,11 +5,13 @@ import React from 'react';
 import Tag from '../Elements/Tag';
 
 const HomeCoverSection = ({ blogs }) => {
+  // ✅ 定义 sortedBlogs
   const sortedBlogs = sortBlogs(blogs);
+
   // ✅ 优先找 frontmatter 里有 homeCover: true 的文章，否则取第一篇
   const coverBlog = blogs.find(b => b.homeCover) || sortedBlogs[0];
 
-  if (!coverBlog) return null; // ✅ 防御性处理，避免 blogs 为空时报错
+  if (!coverBlog) return null; // ✅ 防御性处理
 
   return (
     <div className="w-full inline-block">
@@ -37,8 +39,8 @@ const HomeCoverSection = ({ blogs }) => {
             coverBlog.tagSlugs &&
             coverBlog.tagSlugs.length > 0 && (
               <Tag
-                link={`/categories/${coverBlog.tagSlugs[0]}`} // ✅ 保持原始 slug
-                name={coverBlog.tags[0]}                      // ✅ 显示中文标签
+                link={`/categories/${coverBlog.tagSlugs[0]}`}
+                name={coverBlog.tags[0]}
               />
             )}
           <Link href={coverBlog.url} className="mt-6">
