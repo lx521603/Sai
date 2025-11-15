@@ -27,7 +27,7 @@ const BlogLayoutThree = ({ blog }) => {
           blog.tagSlugs &&
           blog.tagSlugs.length > 0 && (
             <Link
-              href={`/categories/${encodeURIComponent(blog.tagSlugs[0])}`} // ✅ encode
+              href={`/categories/${blog.tagSlugs[0]}`} // ✅ 移除 encodeURIComponent
               className="uppercase text-accent dark:text-accentDark font-semibold text-xs sm:text-sm"
             >
               {blog.tags[0]}
