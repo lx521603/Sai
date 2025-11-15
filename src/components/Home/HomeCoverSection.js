@@ -5,13 +5,12 @@ import React from 'react';
 import Tag from '../Elements/Tag';
 
 const HomeCoverSection = ({ blogs }) => {
-  // ✅ 排序文章，保证 sortedBlogs 存在
-  const sortedBlogs = sortBlogs(blogs);
+  if (!Array.isArray(blogs) || blogs.length === 0) return null;
 
-  // ✅ 优先找 frontmatter 里有 homeCover: true 的文章，否则取第一篇
+  // 优先 frontmatter 标记的 homeCover:true，否则取排序后的第一篇
+  const sortedBlogs = sortBlogs(blogs);
   const coverBlog = blogs.find(b => b.homeCover) || sortedBlogs[0];
 
-  // ✅ 防御性处理，避免 blogs 为空时报错
   if (!coverBlog) return null;
 
   return (
@@ -35,15 +34,19 @@ const HomeCoverSection = ({ blogs }) => {
         )}
 
         <div className="w-full lg:w-3/4 p-6 sm:p-8 md:p-12 lg:p-16 flex flex-col items-start justify-center z-0 text-light">
-          {coverBlog.tags &&
-            coverBlog.tags.length > 0 &&
-            coverBlog.tagSlugs &&
-            coverBlog.tagSlugs.length > 0 && (
-              <Tag
-                link={`/categories/${coverBlog.tagSlugs[0]}`}
-                name={coverBlog.tags[0]}
-              />
-            )}
+          {/* ✅ 显示所有标签 */}
+          {coverBlog.tags && coverBlog.tagSlugs && coverBlog.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {coverBlog.tags.map((tag, idx) => (
+                <Tag
+                  key={idx}
+                  link={`/categories/${coverBlog.tagSlugs[idx]}`}
+                  name={tag}
+                />
+              ))}
+            </div>
+          )}
+
           <Link href={coverBlog.url} className="mt-6">
             <h1 className="font-bold capitalize text-lg sm:text-xl md:text-3xl lg:text-4xl">
               <span
@@ -55,6 +58,7 @@ const HomeCoverSection = ({ blogs }) => {
               </span>
             </h1>
           </Link>
+
           {coverBlog.description && (
             <p className="mt-4 md:text-lg lg:text-xl">
               {coverBlog.description}
