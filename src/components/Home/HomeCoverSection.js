@@ -36,7 +36,7 @@ const HomeCoverSection = ({ blogs }) => {
             blog.tagSlugs &&
             blog.tagSlugs.length > 0 && (
               <Tag
-                link={`/categories/${encodeURIComponent(blog.tagSlugs[0])}`} // ✅ encode
+                link={`/categories/${blog.tagSlugs[0]}`} // ✅ 移除 encodeURIComponent
                 name={blog.tags[0]}
               />
             )}
