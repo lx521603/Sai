@@ -54,10 +54,10 @@ const blog = s
         ? {
           ...data.image,
           src: data.image.src.startsWith('http')
-            ? data.image.src // ✅ 保持远程 URL 不变
-           : data.image.src.replace('/static', '/blogs'), // ✅ 本地资源才替换路径
+            ? data.image.src // ✅ 保留远程 URL
+            : data.image.src.replace('/static', '/blogs'),
           }
-        : null, // ✅ 防御性处理
+       : null,// ✅ 防御性处理
    }
   })
 
