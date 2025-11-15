@@ -5,13 +5,14 @@ import React from 'react';
 import Tag from '../Elements/Tag';
 
 const HomeCoverSection = ({ blogs }) => {
-  // ✅ 定义 sortedBlogs
+  // 排序文章
   const sortedBlogs = sortBlogs(blogs);
 
   // ✅ 优先找 frontmatter 里有 homeCover: true 的文章，否则取第一篇
   const coverBlog = blogs.find(b => b.homeCover) || sortedBlogs[0];
 
-  if (!coverBlog) return null; // ✅ 防御性处理
+  // ✅ 防御性处理，避免 blogs 为空时报错
+  if (!coverBlog) return null;
 
   return (
     <div className="w-full inline-block">
