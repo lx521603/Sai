@@ -17,9 +17,11 @@ const codeOptions = {
 const blog = s
   .object({
     title: s.string(),
-    publishedAt: s.isodate().optional().default(() => new Date().toISOString()),
-    updatedAt: s.isodate().optional().default(() => new Date().toISOString()),
-    description: s.string().optional(),
+    date: s.isodate().optional().default(() => new Date().toISOString()),   // ✅ 用 date 替代 publishedAt
+    update: s.isodate().optional().default(() => new Date().toISOString()), // ✅ 用 update 替代 updatedAt
+    description: s.string().optional(),   // ✅ 非必填
+    summary: s.string().optional(),       // ✅ 新增 summary
+    excerpt: s.string().optional(),       // ✅ 新增 excerpt
     image: s.image().optional(),
     isPublished: s.boolean().default(true),
     author: s.string().optional(),
@@ -50,6 +52,7 @@ const blog = s
       url: `/blogs/${data.slug || titleSlug}`,
       readingTime: readingTime(data.body),
       tagSlugs,
+      description: data.description || data.summary || data.excerpt || '', // ✅ 自动 fallback
       image: data.image
         ? {
             ...data.image,
