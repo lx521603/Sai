@@ -25,13 +25,13 @@ const BlogLayoutOne = ({ blog }) => {
       )}
 
       <div className="w-full absolute bottom-0 p-4 xs:p-6 sm:p-10 z-20">
-        {/* ✅ 标签链接：移除编码 */}
+        {/* ✅ 标签链接：直接使用 slug 和 name */}
         {blog.tags &&
           blog.tags.length > 0 &&
           blog.tagSlugs &&
           blog.tagSlugs.length > 0 && (
             <Tag
-              link={`/categories/${blog.tagSlugs[0]}`}  // ✅ 移除 encodeURIComponent
+              link={`/categories/${blog.tagSlugs[0]}`}
               name={blog.tags[0]}
               className="px-6 text-xs sm:text-sm py-1 sm:py-2 !border"
             />
@@ -47,6 +47,13 @@ const BlogLayoutOne = ({ blog }) => {
             </span>
           </h2>
         </Link>
+
+        {/* ✅ 新增描述渲染，支持中文 */}
+        {blog.description && (
+          <p className="mt-2 text-xs sm:text-sm md:text-base text-light line-clamp-2">
+            {blog.description}
+          </p>
+        )}
       </div>
     </div>
   );
