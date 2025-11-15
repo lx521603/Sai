@@ -1,3 +1,7 @@
+console.log("params.slug:", params.slug);
+console.log("decoded:", decodeURIComponent(params.slug));
+console.log("allBlogs sample:", allBlogs[0]);
+
 import { blogs as allBlogs } from "@/.velite/generated";
 import BlogLayoutThree from "@/src/components/Blog/BlogLayoutThree";
 import Categories from "@/src/components/Blog/Categories";
