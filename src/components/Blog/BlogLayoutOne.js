@@ -25,13 +25,13 @@ const BlogLayoutOne = ({ blog }) => {
       )}
 
       <div className="w-full absolute bottom-0 p-4 xs:p-6 sm:p-10 z-20">
-        {/* ✅ 标签链接：URL 用拼音 slug，显示中文 */}
+        {/* ✅ 标签链接：移除编码 */}
         {blog.tags &&
           blog.tags.length > 0 &&
           blog.tagSlugs &&
           blog.tagSlugs.length > 0 && (
             <Tag
-              link={`/categories/${encodeURIComponent(blog.tagSlugs[0])}`}
+              link={`/categories/${blog.tagSlugs[0]}`}  // ✅ 移除 encodeURIComponent
               name={blog.tags[0]}
               className="px-6 text-xs sm:text-sm py-1 sm:py-2 !border"
             />
