@@ -17,7 +17,7 @@ const getTagSlug = (tag) => {
   return tag.toLowerCase().replace(/\s+/g, "-");
 };
 
-// 预生成所有分类页
+// 预生成所有分类页 - 移除编码
 export async function generateStaticParams() {
   const paths = [{ slug: "all" }];
   const seen = new Set();
@@ -27,8 +27,8 @@ export async function generateStaticParams() {
       blog.tagSlugs.forEach((slug) => {
         if (!seen.has(slug)) {
           seen.add(slug);
-          // ✅ encode 保证 URL 安全
-          paths.push({ slug: encodeURIComponent(slug) });
+          // ✅ 移除 encodeURIComponent
+          paths.push({ slug: slug });
         }
       });
     }
@@ -37,9 +37,9 @@ export async function generateStaticParams() {
   return paths;
 }
 
-// SEO 元数据
+// SEO 元数据 - 移除解码
 export async function generateMetadata({ params }) {
-  const slug = decodeURIComponent(params.slug); // ✅ decode
+  const slug = params.slug; // ✅ 移除 decodeURIComponent
   if (slug === "all") {
     return {
       title: "所有文章",
@@ -62,9 +62,9 @@ export async function generateMetadata({ params }) {
   };
 }
 
-// 主组件
+// 主组件 - 移除解码
 export default function CategoryPage({ params }) {
-  const currentSlug = decodeURIComponent(params.slug); // ✅ decode
+  const currentSlug = params.slug; // ✅ 移除 decodeURIComponent
 
   // ✅ 改成对象数组，保留中文和拼音
   const allCategories = [{ name: "全部标签", slug: "all" }];
@@ -107,7 +107,7 @@ export default function CategoryPage({ params }) {
         </span>
       </div>
 
-      {/* ✅ Categories 内部 link 已改成 encodeURIComponent */}
+      {/* ✅ Categories 组件内部也需要相应修改 */}
       <Categories categories={allCategories} currentSlug={currentSlug} />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-16 mt-5 sm:mt-10 md:mt-24 sxl:mt-32 px-5 sm:px-10 md:px-24 sxl:px-32">
