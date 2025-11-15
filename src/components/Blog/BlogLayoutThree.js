@@ -27,7 +27,7 @@ const BlogLayoutThree = ({ blog }) => {
           blog.tagSlugs &&
           blog.tagSlugs.length > 0 && (
             <Link
-              href={`/categories/${blog.tagSlugs[0]}`} // ✅ 移除 encodeURIComponent
+              href={`/categories/${blog.tagSlugs[0]}`}
               className="uppercase text-accent dark:text-accentDark font-semibold text-xs sm:text-sm"
             >
               {blog.tags[0]}
@@ -47,8 +47,15 @@ const BlogLayoutThree = ({ blog }) => {
           </h2>
         </Link>
 
+        {/* ✅ 新增描述渲染，支持中文 */}
+        {blog.description && (
+          <p className="mt-2 text-xs sm:text-sm md:text-base text-dark dark:text-light line-clamp-2">
+            {blog.description}
+          </p>
+        )}
+
         {blog.publishedAt && (
-          <span className="capitalize text-gray dark:text-light/50 font-semibold text-sm sm:text-base">
+          <span className="capitalize text-gray dark:text-light/50 font-semibold text-sm sm:text-base mt-1">
             {format(new Date(blog.publishedAt), "MMMM dd, yyyy")}
           </span>
         )}
