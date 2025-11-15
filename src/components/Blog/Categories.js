@@ -1,3 +1,6 @@
+console.log("params.slug:", params.slug);
+console.log("decoded:", decodeURIComponent(params.slug));
+
 import React from "react";
 import Category from "./Category";
 
