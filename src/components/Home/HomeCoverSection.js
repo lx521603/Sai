@@ -6,7 +6,7 @@ import Tag from '../Elements/Tag';
 
 const HomeCoverSection = ({ blogs }) => {
   const sortedBlogs = sortBlogs(blogs);
-  const blog = sortedBlogs[0];
+  const coverBlog = blogs.find(blog => blog.homeCover) || sortBlogs(blogs)[0];
 
   if (!blog) return null; // ✅ 防御性处理，避免 blogs 为空时报错
 
