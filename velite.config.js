@@ -17,17 +17,21 @@ const codeOptions = {
 const blog = s
   .object({
     title: s.string(),
-    date: s.isodate().optional().default(() => new Date().toISOString()),   // ✅ 用 date 替代 publishedAt
-    update: s.isodate().optional().default(() => new Date().toISOString()), // ✅ 用 update 替代 updatedAt
-    description: s.string().optional(),   // ✅ 非必填
-    summary: s.string().optional(),       // ✅ 新增 summary
-    excerpt: s.string().optional(),       // ✅ 新增 excerpt
+    // ✅ 新字段
+    date: s.isodate().optional(),
+    update: s.isodate().optional(),
+    // ✅ 老字段兼容
+    publishedAt: s.isodate().optional(),
+    updatedAt: s.isodate().optional(),
+    description: s.string().optional(),
+    summary: s.string().optional(),
+    excerpt: s.string().optional(),
     image: s.image().optional(),
     isPublished: s.boolean().default(true),
     author: s.string().optional(),
     tags: s.array(s.string()).optional().default([]),
     body: s.mdx(),
-    toc: s.toc().optional(),   // ✅ 不要 default([])，避免类型冲突
+    toc: s.toc().optional(),
     slug: s.string().optional(),
   })
   .transform(data => {
@@ -52,13 +56,16 @@ const blog = s
       url: `/blogs/${data.slug || titleSlug}`,
       readingTime: readingTime(data.body),
       tagSlugs,
-      description: data.description || data.summary || data.excerpt || '', // ✅ 自动 fallback
+      // ✅ 自动兼容老字段
+      date: data.date || data.publishedAt || new Date().toISOString(),
+      update: data.update || data.updatedAt || new Date().toISOString(),
+      description: data.description || data.summary || data.excerpt || '',
       image: data.image
         ? {
             ...data.image,
             src: data.image.src.replace('/static', '/blogs'),
           }
-        : null, // ✅ 防御性处理
+        : null,
     }
   })
 
