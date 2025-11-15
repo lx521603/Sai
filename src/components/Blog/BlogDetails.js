@@ -18,7 +18,7 @@ const BlogDetails = ({ blog, slug: blogSlug }) => {
       <div className="m-3">{blog.readingTime?.text || ""}</div>
       {blog.tags && blog.tags.length > 0 && blog.tagSlugs && blog.tagSlugs.length > 0 && (
         <Link
-         href={`/categories/${encodeURIComponent(blog.tagSlugs[0])}`}
+         href={`/categories/${blog.tagSlugs[0]}`}  // ✅ 移除 encodeURIComponent
          className="m-3"
         >
          #{blog.tags[0]}
