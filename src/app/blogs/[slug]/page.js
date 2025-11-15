@@ -6,14 +6,15 @@ import { blogs } from "@/.velite/generated";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
-// 预生成静态参数 - 移除编码
+// 预生成静态参数
 export async function generateStaticParams() {
-  return blogs.map((blog) => ({ slug: blog.slug })); // ✅ 直接使用，不编码
+  return blogs.map((blog) => ({ slug: blog.slug }));
 }
 
-// SEO 元数据 - 移除解码
-export async function generateMetadata({ params }) {
-  const slug = params.slug; // ✅ 直接使用，不解码
+// SEO 元数据
+export async function generateMetadata(props) {
+  const params = await props.params  // ✅ 添加 await
+  const slug = params.slug
   const blog = blogs.find((b) => b.slug === slug);
   if (!blog) return;
 
@@ -89,8 +90,9 @@ function TableOfContentsItem({ item, level = "two" }) {
   );
 }
 
-export default async function BlogPage({ params }) {
-  const slug = params.slug; // ✅ 直接使用，不解码
+export default async function BlogPage(props) {
+  const params = await props.params  // ✅ 添加 await
+  const slug = params.slug
   const blog = blogs.find((b) => b.slug === slug);
 
   if (!blog) {
@@ -134,7 +136,7 @@ export default async function BlogPage({ params }) {
             {blog.tags && blog.tags.length > 0 && blog.tagSlugs && blog.tagSlugs.length > 0 && (
               <Tag
                 name={blog.tags[0]}
-                link={`/categories/${blog.tagSlugs[0]}`} // ✅ 移除编码
+                link={`/categories/${blog.tagSlugs[0]}`}
                 className="px-6 text-sm py-2"
               />
             )}
