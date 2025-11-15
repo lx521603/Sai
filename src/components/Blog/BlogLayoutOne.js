@@ -26,30 +26,16 @@ const BlogLayoutOne = ({ blog }) => {
 
       <div className="w-full absolute bottom-0 p-4 xs:p-6 sm:p-10 z-20">
         {/* ✅ 标签链接：URL 用拼音 slug，显示中文 */}
-        {blog.tags && blog.tags.length > 0 && blog.tagSlugs && blog.tagSlugs.length > 0 && (
-          <Tag
-            ssName="px-6 text-xs sm:text-sm py-1 sm:py-2 !border"
-          />
-        )}
-
-        <Link href={blog.url} className="mt-6">
-          <h2 className="font-bold capitalize text-sm xs:text-base sm:text-xl md:text-2xl text-light mt-2 sm:mt-4">
-            <span
-              className="bg-gradient-to-r from-accent to-accent bg-[length:0px_6px] dark:from-accentDark/50 dark:to-accentDark/50
-                group-hover:bg-[length:100%_6px] bg-left-bottom bg-no-repeat transition-[background-size] duration-500"
-            >
-              {blog.title}
-            </span>
-          </h2>
-        </Link>
-      </div>
-    </div>
-  );
-};
-
-
-          />
-        )}
+        {blog.tags &&
+          blog.tags.length > 0 &&
+          blog.tagSlugs &&
+          blog.tagSlugs.length > 0 && (
+            <Tag
+              link={`/categories/${encodeURIComponent(blog.tagSlugs[0])}`}
+              name={blog.tags[0]}
+              className="px-6 text-xs sm:text-sm py-1 sm:py-2 !border"
+            />
+          )}
 
         <Link href={blog.url} className="mt-6">
           <h2 className="font-bold capitalize text-sm xs:text-base sm:text-xl md:text-2xl text-light mt-2 sm:mt-4">
