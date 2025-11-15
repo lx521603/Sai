@@ -1,44 +1,59 @@
-import { format, parseISO } from "date-fns";
+import { sortBlogs } from "@/src/utils";
 import Link from "next/link";
 import React from "react";
-import ViewCounter from "../Blog/ViewCounter";
+import BlogLayoutThree from "../Blog/BlogLayoutThree";
+import Tag from "../Elements/Tag";
 
-const BlogDetails = ({ blog, slug: blogSlug }) => {
-  if (!blog) return null;
+const RecentPosts = ({ blogs }) => {
+  // 防御性检查：blogs 必须是数组且非空
+  if (!Array.isArray(blogs) || blogs.length === 0) return null;
+
+  // 排序文章
+  const sortedBlogs = sortBlogs(blogs);
 
   return (
-    <div className="px-2 md:px-10 bg-accent dark:bg-accentDark text-light dark:text-dark py-2 flex items-center justify-around flex-wrap text-lg sm:text-xl font-medium mx-5 md:mx-10 rounded-lg">
-      {/* ✅ 发布时间 */}
-      <time className="m-3">
-        {blog.publishedAt
-          ? format(parseISO(blog.publishedAt), "LLLL d, yyyy")
-          : ""}
-      </time>
+    <section className="w-full mt-16 sm:mt-24 md:mt-32 px-5 sm:px-10 md:px-24 sxl:px-32 flex flex-col items-center justify-center">
+      {/* 标题和“浏览所有”链接 */}
+      <div className="w-full flex justify-between">
+        <h2 className="w-fit inline-block font-bold capitalize text-2xl md:text-4xl text-dark dark:text-light">
+          近期文章
+        </h2>
+        <Link
+          href="/categories/all"
+          className="inline-block font-medium text-accent dark:text-accentDark underline underline-offset-2 text-base md:text-lg"
+        >
+          浏览所有
+        </Link>
+      </div>
 
-      {/* ✅ 浏览计数 */}
-      <span className="m-3">
-        <ViewCounter slug={blogSlug} />
-      </span>
-
-      {/* ✅ 阅读时长 */}
-      <div className="m-3">{blog.readingTime?.text || ""}</div>
-
-      {/* ✅ 显示所有标签 */}
-      {blog.tags && blog.tagSlugs && blog.tags.length > 0 && (
-        <div className="flex flex-wrap gap-2 m-3">
-          {blog.tags.map((tag, idx) => (
-            <Link
-              key={idx}
-              href={`/categories/${blog.tagSlugs[idx]}`}
-              className="px-2 py-1 bg-dark/20 dark:bg-light/20 rounded text-sm hover:bg-accent hover:text-light transition-colors"
+      {/* 文章列表 */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 grid-rows-2 gap-16 mt-16">
+        {sortedBlogs.slice(4, 10).map((blog) =>
+          blog ? (
+            <article
+              key={blog._id || blog.slug}
+              className="col-span-1 row-span-1 relative"
             >
-              #{tag}
-            </Link>
-          ))}
-        </div>
-      )}
-    </div>
+              <BlogLayoutThree blog={blog} />
+
+              {/* ✅ 显示所有标签 */}
+              {blog.tags && blog.tagSlugs && blog.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {blog.tags.map((tag, idx) => (
+                    <Tag
+                      key={idx}
+                      link={`/categories/${blog.tagSlugs[idx]}`}
+                      name={tag}
+                    />
+                  ))}
+                </div>
+              )}
+            </article>
+          ) : null
+        )}
+      </div>
+    </section>
   );
 };
 
-export default BlogDetails;
+export default RecentPosts;
