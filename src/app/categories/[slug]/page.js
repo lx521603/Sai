@@ -23,7 +23,8 @@ export async function generateStaticParams() {
       blog.tagSlugs.forEach((slug) => {
         if (!seen.has(slug)) {
           seen.add(slug);
-          paths.push({ slug });
+          // ✅ encode 保证 URL 安全
+          paths.push({ slug: encodeURIComponent(slug) });
         }
       });
     }
@@ -34,7 +35,8 @@ export async function generateStaticParams() {
 
 // SEO 元数据
 export async function generateMetadata({ params }) {
-  if (params.slug === "all") {
+  const slug = decodeURIComponent(params.slug); // ✅ decode
+  if (slug === "all") {
     return {
       title: "所有文章",
       description: "浏览所有的文章和教程",
@@ -42,13 +44,13 @@ export async function generateMetadata({ params }) {
   }
 
   const blogWithTag = allBlogs.find(
-    (blog) => Array.isArray(blog.tagSlugs) && blog.tagSlugs.includes(params.slug) && blog.isPublished
+    (blog) => Array.isArray(blog.tagSlugs) && blog.tagSlugs.includes(slug) && blog.isPublished
   );
 
   const originalTag =
     blogWithTag && Array.isArray(blogWithTag.tags) && Array.isArray(blogWithTag.tagSlugs)
-      ? blogWithTag.tags[blogWithTag.tagSlugs.indexOf(params.slug)]
-      : params.slug;
+      ? blogWithTag.tags[blogWithTag.tagSlugs.indexOf(slug)]
+      : slug;
 
   return {
     title: `${originalTag} Blogs`,
@@ -58,7 +60,7 @@ export async function generateMetadata({ params }) {
 
 // 主组件
 export default function CategoryPage({ params }) {
-  const currentSlug = params.slug;
+  const currentSlug = decodeURIComponent(params.slug); // ✅ decode
 
   // ✅ 改成对象数组，保留中文和拼音
   const allCategories = [{ name: "全部标签", slug: "all" }];
@@ -101,7 +103,7 @@ export default function CategoryPage({ params }) {
         </span>
       </div>
 
-      {/* ✅ 传对象数组 */}
+      {/* ✅ Categories 内部 link 已改成 encodeURIComponent */}
       <Categories categories={allCategories} currentSlug={currentSlug} />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-16 mt-5 sm:mt-10 md:mt-24 sxl:mt-32 px-5 sm:px-10 md:px-24 sxl:px-32">
