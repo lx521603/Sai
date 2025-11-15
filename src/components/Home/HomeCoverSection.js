@@ -1,14 +1,15 @@
-import { sortBlogs } from '@/src/utils'
+import { sortBlogs } from '@/src/utils';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react'
+import React from 'react';
 import Tag from '../Elements/Tag';
 
 const HomeCoverSection = ({ blogs }) => {
   const sortedBlogs = sortBlogs(blogs);
-  const coverBlog = blogs.find(blog => blog.homeCover) || sortBlogs(blogs)[0];
+  // ✅ 优先找 frontmatter 里有 homeCover: true 的文章，否则取第一篇
+  const coverBlog = blogs.find(b => b.homeCover) || sortedBlogs[0];
 
-  if (!blog) return null; // ✅ 防御性处理，避免 blogs 为空时报错
+  if (!coverBlog) return null; // ✅ 防御性处理，避免 blogs 为空时报错
 
   return (
     <div className="w-full inline-block">
@@ -17,12 +18,12 @@ const HomeCoverSection = ({ blogs }) => {
           className="absolute top-0 left-0 bottom-0 right-0 h-full
             bg-gradient-to-b from-transparent from-0% to-dark/90 rounded-3xl z-0"
         />
-        {blog.image && (
+        {coverBlog.image && (
           <Image
-            src={blog.image.src}
-            placeholder={blog.image.blurDataURL ? "blur" : undefined}
-            blurDataURL={blog.image.blurDataURL}
-            alt={blog.title}
+            src={coverBlog.image.src}
+            placeholder={coverBlog.image.blurDataURL ? "blur" : undefined}
+            blurDataURL={coverBlog.image.blurDataURL}
+            alt={coverBlog.title}
             fill
             className="w-full h-full object-center object-cover rounded-3xl -z-10"
             sizes="100vw"
@@ -31,29 +32,31 @@ const HomeCoverSection = ({ blogs }) => {
         )}
 
         <div className="w-full lg:w-3/4 p-6 sm:p-8 md:p-12 lg:p-16 flex flex-col items-start justify-center z-0 text-light">
-          {blog.tags &&
-            blog.tags.length > 0 &&
-            blog.tagSlugs &&
-            blog.tagSlugs.length > 0 && (
+          {coverBlog.tags &&
+            coverBlog.tags.length > 0 &&
+            coverBlog.tagSlugs &&
+            coverBlog.tagSlugs.length > 0 && (
               <Tag
-                link={`/categories/${blog.tagSlugs[0]}`} // ✅ 移除 encodeURIComponent
-                name={blog.tags[0]}
+                link={`/categories/${coverBlog.tagSlugs[0]}`} // ✅ 保持原始 slug
+                name={coverBlog.tags[0]}                      // ✅ 显示中文标签
               />
             )}
-          <Link href={blog.url} className="mt-6">
+          <Link href={coverBlog.url} className="mt-6">
             <h1 className="font-bold capitalize text-lg sm:text-xl md:text-3xl lg:text-4xl">
               <span
                 className="bg-gradient-to-r from-accent to-accent dark:from-accentDark/50 
                 dark:to-accentDark/50 bg-[length:0px_6px]
                 hover:bg-[length:100%_6px] bg-left-bottom bg-no-repeat transition-[background-size] duration-500"
               >
-                {blog.title}
+                {coverBlog.title}
               </span>
             </h1>
           </Link>
-          <p className="mt-4 md:text-lg lg:text-xl">
-            {blog.description}
-          </p>
+          {coverBlog.description && (
+            <p className="mt-4 md:text-lg lg:text-xl">
+              {coverBlog.description}
+            </p>
+          )}
         </div>
       </article>
     </div>
