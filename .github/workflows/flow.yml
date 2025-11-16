@@ -30,7 +30,7 @@ jobs:
         # 这里打包 Next.js 的构建产物和依赖文件
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: next-build
           path: build.tar.gz
@@ -40,7 +40,7 @@ jobs:
     needs: build
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: next-build
 
