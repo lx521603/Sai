@@ -27,10 +27,15 @@ function ImageWithLightbox({ src, alt }) {
   );
 }
 
-// 注册共享组件：覆盖 img，保留 next/image
+// ✅ 保留你原来的所有组件，只在这里新增 img
 const sharedComponents = {
   Image,
-  img: (props) => <ImageWithLightbox {...props} />,
+  Location,        // 你之前注册的 Location 功能
+  // 其它你原来有的组件都写在这里，比如：
+  // VideoPlayer,
+  // Map,
+  // CustomButton,
+  img: (props) => <ImageWithLightbox {...props} />, // 新增的图片放大功能
 };
 
 const useMDXComponent = (code) => {
