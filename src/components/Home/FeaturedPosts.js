@@ -15,7 +15,6 @@ const FeaturedPosts = ({ blogs }) => {
   const sortedBlogs = sortBlogs(blogs);
   const list = featuredBlogs.length > 0 ? featuredBlogs : sortedBlogs.slice(0, 3);
 
-  // 再次防御性：确保有内容
   if (list.length === 0) return null;
 
   return (
@@ -30,11 +29,15 @@ const FeaturedPosts = ({ blogs }) => {
           <article className="col-span-2 sxl:col-span-1 row-span-2 relative">
             <BlogLayoutOne blog={list[0]} />
 
-            {/* 显示所有标签 */}
+            {/* ✅ 显示所有标签 */}
             {list[0].tags && list[0].tagSlugs && list[0].tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-2">
                 {list[0].tags.map((tag, idx) => (
-                  <Tag key={idx} link={`/categories/${list[0].tagSlugs[idx]}`} name={tag} />
+                  <Tag
+                    key={idx}
+                    link={`/categories/${list[0].tagSlugs[idx]}`}
+                    name={tag}
+                  />
                 ))}
               </div>
             )}
@@ -46,11 +49,15 @@ const FeaturedPosts = ({ blogs }) => {
           <article className="col-span-2 sm:col-span-1 row-span-1 relative">
             <BlogLayoutTwo blog={list[1]} />
 
-            {/* 显示所有标签 */}
+            {/* ✅ 显示所有标签 */}
             {list[1].tags && list[1].tagSlugs && list[1].tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-2">
                 {list[1].tags.map((tag, idx) => (
-                  <Tag key={idx} link={`/categories/${list[1].tagSlugs[idx]}`} name={tag} />
+                  <Tag
+                    key={idx}
+                    link={`/categories/${list[1].tagSlugs[idx]}`}
+                    name={tag}
+                  />
                 ))}
               </div>
             )}
@@ -62,11 +69,15 @@ const FeaturedPosts = ({ blogs }) => {
           <article className="col-span-2 sm:col-span-1 row-span-1 relative">
             <BlogLayoutTwo blog={list[2]} />
 
-            {/* 显示所有标签 */}
+            {/* ✅ 显示所有标签 */}
             {list[2].tags && list[2].tagSlugs && list[2].tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-2">
                 {list[2].tags.map((tag, idx) => (
-                  <Tag key={idx} link={`/categories/${list[2].tagSlugs[idx]}`} name={tag} />
+                  <Tag
+                    key={idx}
+                    link={`/categories/${list[2].tagSlugs[idx]}`}
+                    name={tag}
+                  />
                 ))}
               </div>
             )}
