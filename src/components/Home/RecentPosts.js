@@ -2,13 +2,10 @@ import { sortBlogs } from "@/src/utils";
 import Link from "next/link";
 import React from "react";
 import BlogLayoutThree from "../Blog/BlogLayoutThree";
-import Tag from "../Elements/Tag";
 
 const RecentPosts = ({ blogs }) => {
-  // 防御性检查：blogs 必须是数组且非空
   if (!Array.isArray(blogs) || blogs.length === 0) return null;
 
-  // 排序文章
   const sortedBlogs = sortBlogs(blogs);
 
   return (
@@ -34,20 +31,8 @@ const RecentPosts = ({ blogs }) => {
               key={blog._id || blog.slug}
               className="col-span-1 row-span-1 relative"
             >
+              {/* ✅ 标签渲染交给 BlogLayoutThree，不要在这里重复 */}
               <BlogLayoutThree blog={blog} />
-
-              {/* ✅ 显示所有标签 */}
-              {blog.tags && blog.tagSlugs && blog.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {blog.tags.map((tag, idx) => (
-                    <Tag
-                      key={idx}
-                      link={`/categories/${blog.tagSlugs[idx]}`}
-                      name={tag}
-                    />
-                  ))}
-                </div>
-              )}
             </article>
           ) : null
         )}
