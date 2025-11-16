@@ -1,7 +1,7 @@
 import React from "react";
-import Tag from "../Elements/Tag";
 import Link from "next/link";
 import Image from "next/image";
+import Tag from "../Elements/Tag";
 
 const BlogLayoutOne = ({ blog }) => {
   if (!blog) return null;
@@ -52,7 +52,13 @@ const BlogLayoutOne = ({ blog }) => {
         {allTags.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-2">
             {allTags.map((item, idx) => (
-              <Tag key={idx} link={`/categories/${item.slug}`} name={item.tag} />
+              <Link
+                key={idx}
+                href={`/categories/${item.slug}`}
+                className="px-2 py-1 bg-dark/20 dark:bg-light/20 rounded text-sm hover:bg-accent hover:text-light transition-colors"
+              >
+                #{item.tag}
+              </Link>
             ))}
           </div>
         )}
