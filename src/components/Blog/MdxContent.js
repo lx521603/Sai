@@ -6,8 +6,6 @@ import { useState } from "react";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
 
-import Location from "../components/Location"; // 路径要和你项目实际一致
-
 function ImageWithLightbox({ src, alt }) {
   const [open, setOpen] = useState(false);
   return (
