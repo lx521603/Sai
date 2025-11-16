@@ -4,6 +4,15 @@ import MDXContent from './MdxContent'
 import { components as mdxComponents } from '@/src/components/Elements/mdxComponents'
 
 const RenderMdx = ({ blog }) => {
+  // 打印一下看看结构
+  console.log("blog.body:", blog.body)
+
+  // 自动判断 blog.body 的结构
+  const code =
+    typeof blog.body === 'string'
+      ? blog.body
+      : blog.body?.code || blog.body?.compiledSource || ''
+
   return (
     <div className='col-span-12 lg:col-span-8 font-in prose sm:prose-base md:prose-lg max-w-max
       prose-blockquote:bg-accent/20 
@@ -26,8 +35,7 @@ const RenderMdx = ({ blog }) => {
 
       first-letter:text-3xl
       sm:first-letter:text-5xl'> 
-        {/* ✅ 注意这里传 blog.body.code */}
-        <MDXContent code={blog.body.code} components={mdxComponents}/>
+        <MDXContent code={code} components={mdxComponents}/>
     </div>
   )
 }
