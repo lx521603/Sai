@@ -54,12 +54,7 @@ const BlogLayoutTwo = ({ blog }) => {
         {allTags.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-2">
             {allTags.map((item, idx) => (
-              <Tag
-                key={idx}
-                link={`/categories/${item.slug}`}
-                name={item.tag}
-                className="text-xs px-2 py-1 border rounded"
-              />
+              <Tag key={idx} link={`/categories/${item.slug}`} name={item.tag} />
             ))}
           </div>
         )}
