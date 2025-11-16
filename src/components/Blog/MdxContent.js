@@ -24,7 +24,6 @@ function ImageWithLightbox({ src, alt }) {
 
 const sharedComponents = {
   Image,
-  Location, // ✅ 确保这里注册了
   img: (props) => <ImageWithLightbox {...props} />,
 };
 
