@@ -1,4 +1,4 @@
-name: Deploy Next.js (Velite) to VPS with PM2
+name: flow
 
 on:
   #push: 
