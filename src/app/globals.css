@@ -80,38 +80,3 @@ code {
     color: #747474;
   }
   
-/* Glassmorphism 卡片效果 */
-.glass-card {
-  background: rgba(255, 255, 255, 0.1);       /* 半透明背景 */
-  backdrop-filter: blur(12px);                /* 背景模糊 */
-  -webkit-backdrop-filter: blur(12px);        /* Safari 支持 */
-  border-radius: 16px;                        /* 圆角 */
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4); /* 更强的阴影，增强悬浮感 */
-  border: 1px solid rgba(255, 255, 255, 0.2); /* 半透明边框 */
-  padding: 2rem;                              /* 内边距 */
-  transition: all 0.3s ease;                  /* 动画过渡 */
-}
-
-/* 鼠标悬停时卡片轻微上浮 */
-.glass-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.5);
-}
-
-/* 可选：卡片进入时的淡入动画 */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.glass-card {
-  animation: fadeInUp 0.6s ease forwards;
-}
-
-
