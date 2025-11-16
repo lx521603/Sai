@@ -26,11 +26,7 @@ const BlogLayoutTwo = ({ blog }) => {
         {blog.tags && blog.tagSlugs && blog.tags.length > 0 && (
           <div className="absolute top-2 left-2 z-30 flex flex-wrap gap-2">
             {blog.tags.map((tag, idx) => (
-              <Tag
-                key={idx}
-                link={`/categories/${blog.tagSlugs[idx]}`}
-                name={tag}
-              />
+              <Tag key={idx} link={`/categories/${blog.tagSlugs[idx]}`} name={tag} />
             ))}
           </div>
         )}
@@ -44,15 +40,9 @@ const BlogLayoutTwo = ({ blog }) => {
       {/* 标题 + 简介 + 时间（图片下方） */}
       <div className="mt-4">
         <Link href={blog.url}>
-          <h2 className="font-semibold text-lg">
-            {blog.title}
-          </h2>
+          <h2 className="font-semibold text-lg">{blog.title}</h2>
         </Link>
-
-        {blog.description && (
-          <p className="mt-2 text-sm">{blog.description}</p>
-        )}
-
+        {blog.description && <p className="mt-2 text-sm">{blog.description}</p>}
         {blog.publishedAt && (
           <span className="block text-xs text-gray dark:text-light/50 mt-2">
             {format(new Date(blog.publishedAt), "MMMM dd, yyyy")}
