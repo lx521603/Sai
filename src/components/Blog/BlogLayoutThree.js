@@ -1,67 +1,73 @@
-import { format } from "date-fns";
-import Image from "next/image";
-import Link from "next/link";
 import React from "react";
+import Tag from "../Elements/Tag";
+import Link from "next/link";
+import Image from "next/image";
 
-const BlogLayoutThree = ({ blog }) => {
+const BlogLayoutOne = ({ blog }) => {
   return (
-    <div className="group flex flex-col items-center text-dark dark:text-light">
-      <Link href={blog.url} className="h-full rounded-xl overflow-hidden">
-        {blog.image && (
-          <Image
-            src={blog.image.src}
-            placeholder={blog.image.blurDataURL ? "blur" : undefined}
-            blurDataURL={blog.image.blurDataURL}
-            alt={blog.title}
-            width={blog.image.width}
-            height={blog.image.height}
-            className="aspect-[4/3] w-full h-full object-cover object-center group-hover:scale-105 transition-all ease duration-300"
-            sizes="(max-width: 640px) 100vw,(max-width: 1024px) 50vw, 33vw"
-          />
-        )}
-      </Link>
+    <div className="group inline-block overflow-hidden rounded-xl relative">
+      {/* 背景渐变层 */}
+      <div
+        className="absolute top-0 left-0 bottom-0 right-0 h-full
+            bg-gradient-to-b from-transparent from-0% to-dark/90 rounded-xl z-10"
+      />
 
-      <div className="flex flex-col w-full mt-4">
+      {/* 图片本身 */}
+      {blog.image && (
+        <Image
+          src={blog.image.src}
+          placeholder={blog.image.blurDataURL ? "blur" : undefined}
+          blurDataURL={blog.image.blurDataURL}
+          alt={blog.title}
+          width={blog.image.width}
+          height={blog.image.height}
+          className="w-full h-full object-center object-cover rounded-xl group-hover:scale-105 transition-all ease duration-300"
+          sizes="(max-width: 1180px) 100vw, 50vw"
+        />
+      )}
+
+      {/* ✅ 透明点击层，覆盖图片但不影响文字 */}
+      <Link
+        href={blog.url}
+        className="absolute inset-0 z-20"
+        aria-label={blog.title}
+      />
+
+      {/* 文字和标签 overlay */}
+      <div className="w-full absolute bottom-0 p-4 xs:p-6 sm:p-10 z-30">
+        {/* 标签 */}
         {blog.tags &&
           blog.tags.length > 0 &&
           blog.tagSlugs &&
           blog.tagSlugs.length > 0 && (
-            <Link
-              href={`/categories/${blog.tagSlugs[0]}`}
-              className="uppercase text-accent dark:text-accentDark font-semibold text-xs sm:text-sm"
-            >
-              {blog.tags[0]}
-            </Link>
+            <Tag
+              link={`/categories/${blog.tagSlugs[0]}`}
+              name={blog.tags[0]}
+              className="px-6 text-xs sm:text-sm py-1 sm:py-2 !border"
+            />
           )}
 
-        <Link href={blog.url} className="inline-block my-1">
-          <h2 className="font-semibold capitalize text-base sm:text-lg">
+        {/* 标题 */}
+        <Link href={blog.url} className="mt-6 block">
+          <h2 className="font-bold capitalize text-sm xs:text-base sm:text-xl md:text-2xl text-light mt-2 sm:mt-4">
             <span
-              className="bg-gradient-to-r from-accent/50 to-accent/50 dark:from-accentDark/50
-              dark:to-accentDark/50
-              bg-[length:0px_6px]
-              group-hover:bg-[length:100%_6px] bg-left-bottom bg-no-repeat transition-[background-size] duration-500"
+              className="bg-gradient-to-r from-accent to-accent bg-[length:0px_6px] dark:from-accentDark/50 dark:to-accentDark/50
+                group-hover:bg-[length:100%_6px] bg-left-bottom bg-no-repeat transition-[background-size] duration-500"
             >
               {blog.title}
             </span>
           </h2>
         </Link>
 
-        {/* ✅ 新增描述渲染，支持中文 */}
+        {/* 简介 */}
         {blog.description && (
-          <p className="mt-2 text-xs sm:text-sm md:text-base text-dark dark:text-light line-clamp-2">
+          <p className="mt-2 text-xs sm:text-sm md:text-base text-light line-clamp-2">
             {blog.description}
           </p>
-        )}
-
-        {blog.publishedAt && (
-          <span className="capitalize text-gray dark:text-light/50 font-semibold text-sm sm:text-base mt-1">
-            {format(new Date(blog.publishedAt), "MMMM dd, yyyy")}
-          </span>
         )}
       </div>
     </div>
   );
 };
 
-export default BlogLayoutThree;
+export default BlogLayoutOne;
