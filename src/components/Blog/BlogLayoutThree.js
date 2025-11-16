@@ -7,12 +7,11 @@ import Tag from "../Elements/Tag";
 const BlogLayoutThree = ({ blog }) => {
   if (!blog) return null;
 
-  const allTags = blog.tags?.map((tag, idx) => ({
-    tag,
-    slug: blog.tagSlugs[idx],
-  })) || [];
+  const allTags =
+    blog.tags?.map((tag, idx) => ({ tag, slug: blog.tagSlugs?.[idx] })) || [];
 
   const overlayTags = allTags
+    .slice()
     .sort(() => 0.5 - Math.random())
     .slice(0, Math.min(3, allTags.length));
 
@@ -26,7 +25,7 @@ const BlogLayoutThree = ({ blog }) => {
             alt={blog.title}
             width={blog.image.width}
             height={blog.image.height}
-            className="w-full h-full object-cover object-center group-hover:scale-105 transition-all ease duration-300"
+            className="w-full h-full object-cover object-center"
             sizes="100vw"
           />
         )}
@@ -44,7 +43,7 @@ const BlogLayoutThree = ({ blog }) => {
         </Link>
       </div>
 
-      {/* 标题 + 简介 + 全部标签 + 时间 */}
+      {/* 标题 + 简介 + 全部标签 + 时间（普通显示） */}
       <div className="mt-4">
         <Link href={blog.url}>
           <h2 className="font-semibold text-lg">{blog.title}</h2>
