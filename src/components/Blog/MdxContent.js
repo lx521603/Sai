@@ -3,12 +3,17 @@
 import * as runtime from 'react/jsx-runtime'
 import Image from 'next/image'
 import { useState } from 'react'
-import Lightbox from 'react-image-lightbox'
-import 'react-image-lightbox/style.css'
+import Lightbox from 'yet-another-react-lightbox'
+import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails'
+import Zoom from 'yet-another-react-lightbox/plugins/zoom'
+
+import 'yet-another-react-lightbox/styles.css'
+import 'yet-another-react-lightbox/plugins/thumbnails.css'
 
 // 自定义图片点击放大组件
 function ImageWithLightbox({ src, alt }) {
   const [open, setOpen] = useState(false)
+
   return (
     <>
       <img
@@ -19,9 +24,10 @@ function ImageWithLightbox({ src, alt }) {
       />
       {open && (
         <Lightbox
-          mainSrc={src}
-          onCloseRequest={() => setOpen(false)}
-          imageCaption={alt}
+          open={open}
+          close={() => setOpen(false)}
+          slides={[{ src, description: alt }]}
+          plugins={[Thumbnails, Zoom]}
         />
       )}
     </>
