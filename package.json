@@ -6,7 +6,8 @@
     "build": "velite build && next build",
     "dev": "velite build --watch & next dev",
     "start": "next start -p 3888",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postbuild": "next-sitemap"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.47.9",
