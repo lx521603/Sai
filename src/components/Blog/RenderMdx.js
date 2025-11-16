@@ -26,7 +26,8 @@ const RenderMdx = ({ blog }) => {
 
       first-letter:text-3xl
       sm:first-letter:text-5xl'> 
-        <MDXContent code={blog.body} components={mdxComponents}/>
+        {/* ✅ 注意这里传 blog.body.code */}
+        <MDXContent code={blog.body.code} components={mdxComponents}/>
     </div>
   )
 }
