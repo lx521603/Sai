@@ -7,9 +7,18 @@ import Tag from "../Elements/Tag";
 const BlogLayoutTwo = ({ blog }) => {
   if (!blog) return null;
 
+  const allTags = blog.tags?.map((tag, idx) => ({
+    tag,
+    slug: blog.tagSlugs[idx],
+  })) || [];
+
+  const overlayTags = allTags
+    .sort(() => 0.5 - Math.random())
+    .slice(0, Math.min(3, allTags.length));
+
   return (
     <div className="group flex flex-col text-dark dark:text-light">
-      {/* 图片 + 标签 overlay */}
+      {/* 图片 + 随机标签 overlay */}
       <div className="relative rounded-xl overflow-hidden">
         {blog.image && (
           <Image
@@ -22,27 +31,39 @@ const BlogLayoutTwo = ({ blog }) => {
           />
         )}
 
-        {/* 标签 overlay：放在图片底部 */}
-        {blog.tags && blog.tagSlugs && blog.tags.length > 0 && (
+        {overlayTags.length > 0 && (
           <div className="absolute bottom-2 left-2 z-30 flex flex-wrap gap-2">
-            {blog.tags.map((tag, idx) => (
-              <Tag key={idx} link={`/categories/${blog.tagSlugs[idx]}`} name={tag} />
+            {overlayTags.map((item, idx) => (
+              <Tag key={idx} link={`/categories/${item.slug}`} name={item.tag} />
             ))}
           </div>
         )}
 
-        {/* 点击层覆盖图片 */}
         <Link href={blog.url} className="absolute inset-0 z-20">
           <span className="sr-only">{blog.title}</span>
         </Link>
       </div>
 
-      {/* 标题 + 简介 + 时间（图片下方） */}
+      {/* 标题 + 简介 + 全部标签 + 时间 */}
       <div className="mt-4">
         <Link href={blog.url}>
           <h2 className="font-semibold text-lg">{blog.title}</h2>
         </Link>
         {blog.description && <p className="mt-2 text-sm">{blog.description}</p>}
+
+        {allTags.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-2">
+            {allTags.map((item, idx) => (
+              <Tag
+                key={idx}
+                link={`/categories/${item.slug}`}
+                name={item.tag}
+                className="text-xs px-2 py-1 border rounded"
+              />
+            ))}
+          </div>
+        )}
+
         {blog.publishedAt && (
           <span className="block text-xs text-gray dark:text-light/50 mt-2">
             {format(new Date(blog.publishedAt), "MMMM dd, yyyy")}
