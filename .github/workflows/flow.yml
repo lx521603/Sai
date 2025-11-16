@@ -1,0 +1,73 @@
+name: Deploy Next.js (Velite) to VPS with PM2
+
+on:
+  #push: 
+   #branches: [“main”]
+  workflow_dispatch:   # 手动触发，避免自动失败导致服务挂掉
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Archive build artifacts
+        run: tar -czf build.tar.gz .next package.json package-lock.json public
+        # 这里打包 Next.js 的构建产物和依赖文件
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: next-build
+          path: build.tar.gz
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: next-build
+
+      - name: Deploy to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: "build.tar.gz"
+          target: "/opt/1panel/runtime/next/sai"
+
+      - name: SSH and restart PM2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            cd /opt/1panel/runtime/next/sai
+            tar -xzf build.tar.gz
+            rm build.tar.gz
+
+            echo "=== 构建产物已更新 ==="
+            if pm2 list | grep -q "sai"; then
+              pm2 restart sai --update-env
+            else
+              pm2 start npm --name "sai" -- run start
+            fi
+            pm2 save --force
