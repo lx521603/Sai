@@ -10,11 +10,10 @@ const BlogLayoutOne = ({ blog }) => {
     <div className="group inline-block overflow-hidden rounded-xl relative">
       {/* 背景渐变层 */}
       <div
-        className="absolute top-0 left-0 bottom-0 right-0 h-full
-          bg-gradient-to-b from-transparent from-0% to-dark/90 rounded-xl z-10"
+        className="absolute inset-0 h-full bg-gradient-to-b from-transparent from-0% to-dark/90 rounded-xl z-10"
       />
 
-      {/* 图片本身 */}
+      {/* 底层图片（保持叠加效果） */}
       {blog.image && (
         <Image
           src={blog.image.src}
@@ -28,46 +27,34 @@ const BlogLayoutOne = ({ blog }) => {
         />
       )}
 
-      {/* ✅ 透明点击层，覆盖图片但不影响文字 */}
-      <Link
-        href={blog.url}
-        className="absolute inset-0 z-20"
-      >
+      {/* 点击图片跳转（透明层，不影响文字覆盖效果） */}
+      <Link href={blog.url} className="absolute inset-0 z-20">
         <span className="sr-only">{blog.title}</span>
       </Link>
 
-      {/* 文字和标签 overlay */}
+      {/* 叠加的标签、标题、简介（只此一处渲染，避免重复） */}
       <div className="w-full absolute bottom-0 p-4 xs:p-6 sm:p-10 z-30">
-        {/* 标签：显示所有标签 */}
-        {blog.tags &&
-          blog.tags.length > 0 &&
-          blog.tagSlugs &&
-          blog.tagSlugs.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {blog.tags.map((tag, idx) => (
-                <Tag
-                  key={idx}
-                  link={`/categories/${blog.tagSlugs[idx]}`}
-                  name={tag}
-                  className="px-4 text-xs sm:text-sm py-1 sm:py-2 !border"
-                />
-              ))}
-            </div>
-          )}
+        {blog.tags && blog.tagSlugs && blog.tags.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {blog.tags.map((tag, idx) => (
+              <Tag
+                key={idx}
+                link={`/categories/${blog.tagSlugs[idx]}`}
+                name={tag}
+                className="px-4 text-xs sm:text-sm py-1 sm:py-2 !border"
+              />
+            ))}
+          </div>
+        )}
 
-        {/* 标题 */}
-        <Link href={blog.url} className="mt-6 block">
-          <h2 className="font-bold capitalize text-sm xs:text-base sm:text-xl md:text-2xl text-light mt-2 sm:mt-4">
-            <span
-              className="bg-gradient-to-r from-accent to-accent bg-[length:0px_6px] dark:from-accentDark/50 dark:to-accentDark/50
-                group-hover:bg-[length:100%_6px] bg-left-bottom bg-no-repeat transition-[background-size] duration-500"
-            >
+        <Link href={blog.url} className="mt-4 block">
+          <h2 className="font-bold capitalize text-sm xs:text-base sm:text-xl md:text-2xl text-light">
+            <span className="bg-gradient-to-r from-accent to-accent bg-[length:0px_6px] dark:from-accentDark/50 dark:to-accentDark/50 group-hover:bg-[length:100%_6px] bg-left-bottom bg-no-repeat transition-[background-size] duration-500">
               {blog.title}
             </span>
           </h2>
         </Link>
 
-        {/* 简介 */}
         {blog.description && (
           <p className="mt-2 text-xs sm:text-sm md:text-base text-light line-clamp-2">
             {blog.description}
