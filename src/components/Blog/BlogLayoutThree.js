@@ -22,9 +22,9 @@ const BlogLayoutThree = ({ blog }) => {
           />
         )}
 
-        {/* 标签 overlay */}
+        {/* 标签 overlay：放在图片底部 */}
         {blog.tags && blog.tagSlugs && blog.tags.length > 0 && (
-          <div className="absolute top-2 left-2 z-30 flex flex-wrap gap-2">
+          <div className="absolute bottom-2 left-2 z-30 flex flex-wrap gap-2">
             {blog.tags.map((tag, idx) => (
               <Tag key={idx} link={`/categories/${blog.tagSlugs[idx]}`} name={tag} />
             ))}
