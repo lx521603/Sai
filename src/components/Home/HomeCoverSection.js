@@ -20,17 +20,21 @@ const HomeCoverSection = ({ blogs }) => {
           className="absolute top-0 left-0 bottom-0 right-0 h-full
             bg-gradient-to-b from-transparent from-0% to-dark/90 rounded-3xl z-0"
         />
+
+        {/* ✅ 图片也能点击跳转 */}
         {coverBlog.image && (
-          <Image
-            src={coverBlog.image.src}
-            placeholder={coverBlog.image.blurDataURL ? "blur" : undefined}
-            blurDataURL={coverBlog.image.blurDataURL}
-            alt={coverBlog.title}
-            fill
-            className="w-full h-full object-center object-cover rounded-3xl -z-10"
-            sizes="100vw"
-            priority
-          />
+          <Link href={coverBlog.url} className="absolute inset-0 -z-10 rounded-3xl">
+            <Image
+              src={coverBlog.image.src}
+              placeholder={coverBlog.image.blurDataURL ? "blur" : undefined}
+              blurDataURL={coverBlog.image.blurDataURL}
+              alt={coverBlog.title}
+              fill
+              className="w-full h-full object-center object-cover rounded-3xl hover:opacity-90 transition-opacity"
+              sizes="100vw"
+              priority
+            />
+          </Link>
         )}
 
         <div className="w-full lg:w-3/4 p-6 sm:p-8 md:p-12 lg:p-16 flex flex-col items-start justify-center z-0 text-light">
@@ -47,6 +51,7 @@ const HomeCoverSection = ({ blogs }) => {
             </div>
           )}
 
+          {/* 标题也能点击跳转 */}
           <Link href={coverBlog.url} className="mt-6">
             <h1 className="font-bold capitalize text-lg sm:text-xl md:text-3xl lg:text-4xl">
               <span
