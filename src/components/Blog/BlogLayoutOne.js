@@ -11,17 +11,20 @@ const BlogLayoutOne = ({ blog }) => {
             bg-gradient-to-b from-transparent from-0% to-dark/90 rounded-xl z-10"
       />
 
+      {/* ✅ 图片也能点击跳转 */}
       {blog.image && (
-        <Image
-          src={blog.image.src}
-          placeholder={blog.image.blurDataURL ? "blur" : undefined}
-          blurDataURL={blog.image.blurDataURL}
-          alt={blog.title}
-          width={blog.image.width}
-          height={blog.image.height}
-          className="w-full h-full object-center object-cover rounded-xl group-hover:scale-105 transition-all ease duration-300"
-          sizes="(max-width: 1180px) 100vw, 50vw"
-        />
+        <Link href={blog.url} className="block">
+          <Image
+            src={blog.image.src}
+            placeholder={blog.image.blurDataURL ? "blur" : undefined}
+            blurDataURL={blog.image.blurDataURL}
+            alt={blog.title}
+            width={blog.image.width}
+            height={blog.image.height}
+            className="w-full h-full object-center object-cover rounded-xl group-hover:scale-105 transition-all ease duration-300 hover:opacity-90"
+            sizes="(max-width: 1180px) 100vw, 50vw"
+          />
+        </Link>
       )}
 
       <div className="w-full absolute bottom-0 p-4 xs:p-6 sm:p-10 z-20">
@@ -37,7 +40,8 @@ const BlogLayoutOne = ({ blog }) => {
             />
           )}
 
-        <Link href={blog.url} className="mt-6">
+        {/* ✅ 标题也能点击跳转 */}
+        <Link href={blog.url} className="mt-6 block">
           <h2 className="font-bold capitalize text-sm xs:text-base sm:text-xl md:text-2xl text-light mt-2 sm:mt-4">
             <span
               className="bg-gradient-to-r from-accent to-accent bg-[length:0px_6px] dark:from-accentDark/50 dark:to-accentDark/50
