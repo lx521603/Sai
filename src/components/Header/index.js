@@ -53,6 +53,7 @@ const toggle = () =>{
         
         >
             <Link href="/" className="mr-2">首页</Link>
+            <Link href="/categories/all" className="mx-2">博客</Link>
             <Link href="/about" className="mx-2">关于</Link>
             <Link href="/contact" className="mx-2">联系</Link>
             <button onClick={() => setMode(mode === "light" ? "dark" : "light")  }
