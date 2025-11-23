@@ -71,6 +71,7 @@ const toggle = () =>{
         <nav className=" w-max py-3 px-8 border border-solid border-dark rounded-full font-medium capitalize  items-center hidden sm:flex
         fixed top-6 right-1/2 translate-x-1/2 bg-light/80 backdrop-blur-sm z-50">
             <Link href="/" className="mr-2">首页</Link>
+            <Link href="/categories/all" className="mx-2">博客</Link>
             <Link href="/about" className="mx-2">关于</Link>
             <Link href="/contact" className="mx-2">联系</Link>
             <button onClick={() => setMode(mode === "light" ? "dark" : "light")  }
