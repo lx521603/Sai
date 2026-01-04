@@ -6,71 +6,105 @@ import Tag from '../Elements/Tag';
 
 const HomeCoverSection = ({ blogs }) => {
   if (!Array.isArray(blogs) || blogs.length === 0) {
-    console.log('HomeCoverSection: 没有接收到文章数据');
+    console.log('HomeCoverSection: 没有文章数据');
     return null;
   }
 
-  // 调试：查看所有文章的 homeCover 状态
-  console.log('=== HomeCoverSection 调试信息 ===');
-  blogs.forEach((blog, index) => {
-    console.log(`${index + 1}. ${blog.title || blog.frontmatter?.title}`);
-    console.log('  - homeCover (直接访问):', blog.homeCover);
-    console.log('  - homeCover (frontmatter访问):', blog.frontmatter?.homeCover);
-    console.log('  - 是否有 frontmatter:', !!blog.frontmatter);
-  });
+  console.log('=== HomeCoverSection开始执行 ===');
+  
+  // 方法1：先尝试找到有homeCover的文章
+  const findHomeCoverBlog = () => {
+    for (let blog of blogs) {
+      // 检查各种可能的homeCover位置
+      let hasCover = false;
+      
+      // 直接属性
+      if (blog.homeCover === true || blog.homeCover === 'true') {
+        console.log(`找到homeCover文章(直接属性): ${blog.title}`);
+        hasCover = true;
+      }
+      // frontmatter属性
+      else if (blog.frontmatter?.homeCover === true || blog.frontmatter?.homeCover === 'true') {
+        console.log(`找到homeCover文章(frontmatter): ${blog.title}`);
+        hasCover = true;
+      }
+      // metadata属性
+      else if (blog.metadata?.homeCover === true || blog.metadata?.homeCover === 'true') {
+        console.log(`找到homeCover文章(metadata): ${blog.title}`);
+        hasCover = true;
+      }
+      
+      if (hasCover) {
+        return blog;
+      }
+    }
+    return null;
+  };
 
-  // 查找有 homeCover 的文章
-  const homeCoverBlogs = blogs.filter(blog => {
-    const hasCover = 
-      blog.homeCover === true || 
-      blog.homeCover === 'true' || 
-      blog.frontmatter?.homeCover === true ||
-      blog.frontmatter?.homeCover === 'true';
-    return hasCover;
-  });
+  // 方法2：排序获取最新文章
+  const getLatestBlog = () => {
+    const sorted = sortBlogs(blogs);
+    const latest = sorted[0];
+    console.log(`最新文章: ${latest?.title}`);
+    return latest;
+  };
+
+  // 查找homeCover文章
+  let coverBlog = findHomeCoverBlog();
   
-  console.log('找到 homeCover 文章数量:', homeCoverBlogs.length);
-  
-  // 如果有 homeCover 文章，按日期排序后取最新的一篇
-  let coverBlog;
-  if (homeCoverBlogs.length > 0) {
-    // 按日期排序 homeCover 文章
-    const sortedCoverBlogs = [...homeCoverBlogs].sort((a, b) => {
-      const dateA = a.publishedAt || a.date || a.frontmatter?.publishedAt || a.frontmatter?.date;
-      const dateB = b.publishedAt || b.date || b.frontmatter?.publishedAt || b.frontmatter?.date;
-      return new Date(dateB) - new Date(dateA); // 最新的在前面
-    });
-    coverBlog = sortedCoverBlogs[0];
-    console.log('选择 homeCover 文章:', coverBlog.title);
+  if (coverBlog) {
+    console.log('✅ 使用homeCover文章作为封面:', coverBlog.title);
   } else {
-    // 没有 homeCover 文章，取最新的一篇
-    const sortedBlogs = sortBlogs(blogs);
-    coverBlog = sortedBlogs[0];
-    console.log('没有找到 homeCover，使用最新文章:', coverBlog.title);
+    console.log('❌ 没有找到homeCover文章，使用最新文章');
+    coverBlog = getLatestBlog();
   }
 
   if (!coverBlog) {
     console.log('没有找到任何文章作为封面');
-    return null;
+    return (
+      <div className="w-full text-center py-20">
+        <p className="text-gray-500">暂无封面文章</p>
+      </div>
+    );
   }
 
-  console.log('最终封面文章信息:', {
-    title: coverBlog.title,
-    homeCover: coverBlog.homeCover || coverBlog.frontmatter?.homeCover,
-    image: coverBlog.image,
-    url: coverBlog.url
+  // 确保我们获取正确的字段
+  const getField = (blog, field) => {
+    // 按优先级查找字段
+    const sources = [
+      () => blog[field],
+      () => blog.frontmatter?.[field],
+      () => blog.metadata?.[field],
+      () => blog.data?.[field]
+    ];
+    
+    for (let source of sources) {
+      const value = source();
+      if (value !== undefined && value !== null) {
+        return value;
+      }
+    }
+    return null;
+  };
+
+  const title = getField(coverBlog, 'title') || '无标题';
+  const imageSrc = getField(coverBlog, 'image')?.src || 
+                   getField(coverBlog, 'image') || 
+                   '/default-cover.jpg';
+  const url = coverBlog.url || `/blog/${coverBlog.slug}`;
+  const description = getField(coverBlog, 'description') || '';
+  const tags = getField(coverBlog, 'tags') || [];
+  const tagSlugs = getField(coverBlog, 'tagSlugs') || [];
+
+  console.log('封面文章详情:', {
+    title,
+    image: imageSrc,
+    url,
+    hasImage: !!imageSrc
   });
 
-  // 获取实际要使用的字段
-  const title = coverBlog.title || coverBlog.frontmatter?.title;
-  const image = coverBlog.image || { src: '/default-cover.jpg' };
-  const url = coverBlog.url || `/blog/${coverBlog.slug}`;
-  const description = coverBlog.description || coverBlog.frontmatter?.description;
-  const tags = coverBlog.tags || coverBlog.frontmatter?.tags || [];
-  const tagSlugs = coverBlog.tagSlugs || [];
-
   return (
-    <div className="w-full inline-block border-4 border-green-500"> {/* 临时添加边框以便识别 */}
+    <div className="w-full inline-block">
       <article className="flex flex-col items-start justify-end mx-5 sm:mx-10 relative h-[60vh] sm:h-[85vh]">
         <div
           className="absolute top-0 left-0 bottom-0 right-0 h-full
@@ -80,14 +114,13 @@ const HomeCoverSection = ({ blogs }) => {
         {/* 图片部分 */}
         <Link href={url} className="absolute inset-0 -z-10 rounded-3xl">
           <Image
-            src={typeof image === 'string' ? image : image.src}
-            placeholder="blur"
-            blurDataURL={image.blurDataURL || '/default-cover.jpg'}
+            src={imageSrc}
             alt={title}
             fill
             className="w-full h-full object-center object-cover rounded-3xl hover:opacity-90 transition-opacity"
             sizes="100vw"
             priority
+            // 如果没有blurDataURL，可以移除placeholder属性
           />
         </Link>
 
@@ -122,6 +155,15 @@ const HomeCoverSection = ({ blogs }) => {
             <p className="mt-4 md:text-lg lg:text-xl">
               {description}
             </p>
+          )}
+          
+          {/* 调试信息（仅在开发环境显示） */}
+          {process.env.NODE_ENV === 'development' && (
+            <div className="mt-4 p-2 bg-black/50 text-xs rounded">
+              <div>当前封面: {title}</div>
+              <div>homeCover值: {String(getField(coverBlog, 'homeCover'))}</div>
+              <div>图片路径: {imageSrc}</div>
+            </div>
           )}
         </div>
       </article>
