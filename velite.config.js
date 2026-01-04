@@ -25,6 +25,7 @@ const blog = s
     // ✅ 添加 homeCover 字段
     homeCover: s.boolean().default(false),
     
+    featuredorder: s.number().optional(),
     isPublished: s.boolean().default(true),
     author: s.string().optional(),
     tags: s.array(s.string()).optional().default([]),
