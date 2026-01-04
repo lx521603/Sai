@@ -7,9 +7,21 @@ import Tag from '../Elements/Tag';
 const HomeCoverSection = ({ blogs }) => {
   if (!Array.isArray(blogs) || blogs.length === 0) return null;
 
+  // 调试：查看数据结构
+  console.log('HomeCoverSection 接收的数据:', blogs[0]);
+  console.log('homeCover 值:', blogs[0]?.frontmatter?.homeCover);
+
   // 优先 frontmatter 标记的 homeCover:true，否则取排序后的第一篇
   const sortedBlogs = sortBlogs(blogs);
-  const coverBlog = blogs.find(b => b.homeCover) || sortedBlogs[0];
+  
+  // ✅ 修改这里：使用 frontmatter.homeCover
+  const coverBlog = blogs.find(b => 
+    b.frontmatter?.homeCover === true || 
+    b.frontmatter?.homeCover === 'true'
+  ) || sortedBlogs[0];
+
+  console.log('最终选中的封面文章:', coverBlog?.title);
+  console.log('homeCover 状态:', coverBlog?.frontmatter?.homeCover);
 
   if (!coverBlog) return null;
 
