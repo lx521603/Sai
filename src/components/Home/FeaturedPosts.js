@@ -26,7 +26,7 @@ const FeaturedPosts = ({ blogs }) => {
   }
   
   // 4. 只取前3篇
-  displayBlogs = displayBlogs.slice(0, 3);
+  displayBlogs = displayBlogs.slice(0, 6);
   
   // 5. 调试信息（可选）
   console.log('精选文章顺序:', displayBlogs.map(b => ({
